@@ -8,6 +8,7 @@ import type {
 } from "@/types";
 import { etaMinutes, safeUntilMs } from "@/services/geo";
 import { getNgoById } from "@/services/ngos";
+import { connectSync, readJson, writeJson } from "@/services/storage";
 import { MIN_POST_MINUTES, SAFETY_BUFFER_MIN, SAFE_WINDOWS } from "@/config/brand";
 import rawAreas from "@/data/areas.json";
 
@@ -50,57 +51,21 @@ export interface ListingOverride {
   deliveredAt?: string;
 }
 
-function readJson<T>(key: string): T | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeJson(key: string, value: unknown) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* private mode: demo state won't persist */
-  }
-}
+/** Cross-tab pipe: refresh this store when another tab mutates it. */
+const sync = connectSync("annadaan", () => emit());
 
 type Listener = (listings: Listing[]) => void;
 
 const listeners = new Set<Listener>();
-let channel: BroadcastChannel | null = null;
 
 /** Notify every mounted board/strip; also tell other tabs. */
 function emit() {
-  const board = getBoard();
-  listeners.forEach((fn) => fn(board));
-  try {
-    if (!channel) channel = new BroadcastChannel("annadaan");
-    channel.postMessage("changed");
-  } catch {
-    /* no channel support: this tab still updates */
-  }
-}
-
-function onChannelMessage() {
-  const board = getBoard();
-  listeners.forEach((fn) => fn(board));
+  listeners.forEach((fn) => fn(getBoard()));
+  sync();
 }
 
 export function subscribe(fn: Listener): () => void {
   listeners.add(fn);
-  try {
-    if (!channel) {
-      channel = new BroadcastChannel("annadaan");
-      channel.onmessage = onChannelMessage;
-    }
-  } catch {
-    /* ignore */
-  }
   return () => {
     listeners.delete(fn);
   };
