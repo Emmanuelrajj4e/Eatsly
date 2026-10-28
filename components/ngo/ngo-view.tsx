@@ -6,16 +6,24 @@ import { useBoard } from "@/hooks/use-board";
 import { useTicker } from "@/hooks/use-ticker";
 import { getNgos, onboardNgo, subscribe as subscribeNgos } from "@/services/ngos";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { buttonStyles } from "@/components/ui/button";
+import { Button, buttonStyles } from "@/components/ui/button";
 import { DietMarker } from "@/components/ui/diet-marker";
 import { CountdownBar } from "@/components/ui/countdown-bar";
 import { Tracker } from "@/components/board/tracker";
+import { TrackDrawer } from "@/components/board/track-drawer";
 import { useToast } from "@/components/ui/toast";
 import type { Listing, NGO } from "@/types";
 
 /** Left column: every run that is claimed or picked up, with live clocks. */
-function ActiveRuns({ board, nowMs }: { board: Listing[]; nowMs: number }) {
+function ActiveRuns({
+  board,
+  nowMs,
+  onTrack,
+}: {
+  board: Listing[];
+  nowMs: number;
+  onTrack: (id: string) => void;
+}) {
   const runs = board
     .filter((l) => l.status === "claimed" || l.status === "picked_up")
     .sort((a, b) => (a.claimedAt ?? "").localeCompare(b.claimedAt ?? ""));
@@ -53,7 +61,7 @@ function ActiveRuns({ board, nowMs }: { board: Listing[]; nowMs: number }) {
             </p>
             <CountdownBar listing={l} nowMs={nowMs} className="mt-3" compact />
             <div className="mt-3">
-              <Tracker listing={l} />
+              <Tracker listing={l} onTrack={onTrack} />
             </div>
           </Card>
         </li>
@@ -63,9 +71,7 @@ function ActiveRuns({ board, nowMs }: { board: Listing[]; nowMs: number }) {
 }
 
 function ngoNameOf(listing: Listing) {
-  return (
-    getNgos().find((n) => n.id === listing.ngoId)?.name ?? "The claiming NGO"
-  );
+  return getNgos().find((n) => n.id === listing.ngoId)?.name ?? "The claiming NGO";
 }
 
 /** Right column: onboarding card that really adds an NGO to the demo network. */
@@ -112,7 +118,7 @@ function OnboardCard({ onboarded }: { onboarded: NGO[] }) {
             aria-describedby={error ? "ngo-name-e" : undefined}
           />
           {error && (
-            <span id="ngo-name-e" role="alert" className="mt-1 block text-xs font-medium text-chilli">
+            <span id="ngo-name-e" role="alert" className="mt-1 block text-xs font-medium">
               {error}
             </span>
           )}
@@ -176,11 +182,12 @@ function OnboardCard({ onboarded }: { onboarded: NGO[] }) {
   );
 }
 
-/** Full NGO + volunteer dashboard. */
-export function NetworkView() {
+/** Full NGO + volunteer dashboard with its own live-tracking drawer. */
+export function NgoView() {
   const board = useBoard();
   const nowMs = useTicker() * 1000;
   const [onboarded, setOnboarded] = useState<NGO[]>([]);
+  const [trackId, setTrackId] = useState<string | null>(null);
 
   useEffect(() => {
     const update = () => setOnboarded(getNgos().filter((n) => n.newlyAdded));
@@ -193,28 +200,30 @@ export function NetworkView() {
   }, []);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
-      <section aria-label="Active runs">
-        <h2 className="font-display text-2xl font-bold tracking-tight">Active runs</h2>
+    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
+      <section aria-label="Active runs" className="order-2 lg:order-1">
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">Active runs</h1>
         <p className="mt-1 text-sm text-muted">
           Food that has been claimed and is waiting for pickup or delivery. Mark the
           steps as they happen — impact only counts when a delivery is marked.
         </p>
         <div className="mt-4">
           {board ? (
-            <ActiveRuns board={board} nowMs={nowMs} />
+            <ActiveRuns board={board} nowMs={nowMs} onTrack={setTrackId} />
           ) : (
             <Card aria-busy="true">
-              <div className="h-6 w-40 animate-pulse rounded bg-foreground/10" />
-              <div className="mt-3 h-4 w-full animate-pulse rounded bg-foreground/[0.06]" />
+              <div className="h-6 w-40 animate-pulse bg-wash" />
+              <div className="mt-3 h-4 w-full animate-pulse bg-wash" />
             </Card>
           )}
         </div>
       </section>
 
-      <aside className="space-y-4" aria-label="NGO onboarding">
+      <aside className="order-1 space-y-4 lg:order-2 lg:sticky lg:top-20" aria-label="NGO onboarding">
         <OnboardCard onboarded={onboarded} />
       </aside>
+
+      <TrackDrawer trackId={trackId} onClose={() => setTrackId(null)} />
     </div>
   );
 }

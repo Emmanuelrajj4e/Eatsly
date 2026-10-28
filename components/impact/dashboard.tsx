@@ -24,81 +24,94 @@ function Stat({ label, target, note }: { label: string; target: number; note?: s
   );
 }
 
-/** Pure-SVG 7-day bar chart; today's bar highlighted in marigold. */
-function WeekChart({ stats }: { stats: ImpactStats }) {
+/** Pure-SVG 7-day chart in black/white/gray patterns: solid days, hatched today. */
+function WeekChart({
+  stats,
+  labels,
+}: {
+  stats: ImpactStats;
+  labels: string[];
+}) {
   const max = Math.max(...stats.last7Days, 1);
-  const todayLabel = new Date().toLocaleDateString("en-IN", { weekday: "short" });
   return (
     <Card aria-label="Meals rescued over the last 7 days">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-lg font-semibold">Meals rescued · last 7 days</h2>
         <Tag>by day</Tag>
       </div>
-      <svg
-        viewBox="0 0 480 170"
-        className="mt-4 h-auto w-full"
-        role="img"
-        aria-label={`Bar chart of meals per day; today ${todayLabel} sits at ${Math.max(
-          ...stats.last7Days,
-        )} at its best bar`}
-      >
+      <svg viewBox="0 0 480 170" className="mt-4 h-auto w-full" role="img" aria-label={`Bar chart of meals per day. ${labels[6]}: ${stats.last7Days[6]} meals, highest of the week`}>
+        <defs>
+          <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+            <rect width="6" height="6" fill="var(--background)" />
+            <line x1="0" y1="0" x2="0" y2="6" stroke="var(--foreground)" strokeWidth="2" />
+          </pattern>
+        </defs>
         {stats.last7Days.map((meals, i) => {
           const w = 52;
           const gap = 12;
           const x = 10 + i * (w + gap);
-          const h = Math.round((meals / max) * 120);
+          const h = Math.max(2, Math.round((meals / max) * 120));
           const y = 145 - h;
+          const today = i === 6;
           return (
             <g key={i}>
-              <rect x={x} y={y} width={w} height={h} rx="4" fill={i === 6 ? "var(--marigold)" : "var(--leaf)"} opacity={i === 6 ? 1 : 0.85} />
-              <text
-                x={x + w / 2}
-                y={y - 6}
-                textAnchor="middle"
-                fontSize="12"
-                fontFamily="var(--font-mono)"
-                fill="var(--muted)"
-              >
+              <rect
+                x={x}
+                y={y}
+                width={w}
+                height={h}
+                fill={today ? "url(#hatch)" : "var(--foreground)"}
+                stroke="var(--foreground)"
+                strokeWidth={today ? 1.5 : 0}
+              />
+              <text x={x + w / 2} y={y - 6} textAnchor="middle" fontSize="12" fontFamily="var(--font-mono)" fill="var(--foreground)">
                 {meals}
               </text>
-              <text
-                x={x + w / 2}
-                y="162"
-                textAnchor="middle"
-                fontSize="11"
-                fontFamily="var(--font-mono)"
-                fill="var(--muted)"
-              >
-                {i === 6 ? todayLabel : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][i]}
+              <text x={x + w / 2} y="162" textAnchor="middle" fontSize="11" fontFamily="var(--font-mono)" fill="var(--muted)">
+                {labels[i]}
               </text>
             </g>
           );
         })}
       </svg>
+      <p className="mt-1 font-mono text-[11px] text-muted">
+        Hatched bar = today. Solid bars = the six days before it.
+      </p>
     </Card>
   );
 }
 
+/** Weekday labels computed on the client: first six days back, today last. */
+function todayLabels() {
+  const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const today = new Date().getDay();
+  return [6, 5, 4, 3, 2, 1, 0].map((back) => names[(today - back + 7) % 7]);
+}
+
 /** Live dashboard: counters and chart move as claims and deliveries happen. */
 export function ImpactDashboard() {
-  const [stats, setStats] = useState<ImpactStats | null>(null);
+  const [data, setData] = useState<{ stats: ImpactStats; labels: string[] } | null>(null);
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setStats(getImpact()));
-    const unsub = subscribeImpact((next) => setStats(next));
+    const id = requestAnimationFrame(() =>
+      setData({ stats: getImpact(), labels: todayLabels() }),
+    );
+    const unsub = subscribeImpact((next) =>
+      setData((prev) => ({ stats: next, labels: prev?.labels ?? todayLabels() })),
+    );
     return () => {
       cancelAnimationFrame(id);
       unsub();
     };
   }, []);
 
-  if (!stats) {
+  if (!data) {
     return (
       <div className="grid gap-4 sm:grid-cols-3" aria-busy="true">
         {[0, 1, 2].map((i) => (
           <Card key={i}>
-            <div className="h-10 w-32 animate-pulse rounded bg-foreground/10" />
-            <div className="mt-3 h-4 w-40 animate-pulse rounded bg-foreground/[0.06]" />
+            <div className="h-10 w-32 animate-pulse bg-wash" />
+            <div className="mt-3 h-4 w-40 animate-pulse bg-wash" />
           </Card>
         ))}
       </div>
@@ -108,11 +121,11 @@ export function ImpactDashboard() {
   return (
     <div className={cn("space-y-4")}>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat label="meals rescued today" target={stats.mealsRescuedToday} />
-        <Stat label="servings waiting now" target={stats.servingsWaitingNow} note="open on the board" />
-        <Stat label="kg saved from the bin" target={stats.kgSaved} note={`≈ 0.38 kg per meal served`} />
+        <Stat label="meals rescued today" target={data.stats.mealsRescuedToday} />
+        <Stat label="servings waiting now" target={data.stats.servingsWaitingNow} note="open on the board" />
+        <Stat label="kg saved from the bin" target={data.stats.kgSaved} note={`≈ ${KG_PER_SERVING} kg per meal served`} />
       </div>
-      <WeekChart stats={stats} />
+      <WeekChart stats={data.stats} labels={data.labels} />
       <Card className="text-sm text-muted">
         <h2 className="font-display text-base font-semibold text-foreground">
           How the numbers move

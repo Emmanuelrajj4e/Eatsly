@@ -77,6 +77,8 @@ export interface PostListingInput {
   donorName: string;
   /** One of data/areas.json names; coordinates resolve from it. */
   area: string;
+  /** Nutrition profile, e.g. ["Carb-rich", "Protein-rich"]. */
+  tags?: string[];
 }
 
 export type PostResult =

@@ -9,7 +9,7 @@ import { DietMarker } from "@/components/ui/diet-marker";
 import { useToast } from "@/components/ui/toast";
 import { useTicker } from "@/hooks/use-ticker";
 import { postListing } from "@/services/listings";
-import { MIN_POST_MINUTES, SAFE_WINDOWS } from "@/config/brand";
+import { MIN_POST_MINUTES, SAFE_WINDOWS, NUTRITION_TAGS, TAG_ANCHORS } from "@/config/brand";
 import rawAreas from "@/data/areas.json";
 import type { FoodType } from "@/types";
 
@@ -27,6 +27,7 @@ const schema = z.object({
     .min(1, "At least 1 serving.")
     .max(500, "Split bigger batches into two posts."),
   preparedTime: z.string().regex(/^\d{2}:\d{2}$/, "Set the last-cooked time."),
+  tags: z.array(z.string()).max(4),
 });
 
 export function PostForm() {
@@ -41,6 +42,7 @@ export function PostForm() {
   const [veg, setVeg] = useState(true);
   const [servings, setServings] = useState("45");
   const [preparedTime, setPreparedTime] = useState("");
+  const [tags, setTags] = useState<string[]>(["Carb-rich", "Protein-rich"]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Prefill "10 minutes ago" as the last-cooked time (client-only clock).
@@ -60,6 +62,7 @@ export function PostForm() {
     veg,
     servings: Number(servings),
     preparedTime,
+    tags,
   };
   const built = buildFormData(data, nowMs);
   const blocked = built ? built.leftMs < MIN_POST_MINUTES * 60000 : false;
@@ -94,6 +97,7 @@ export function PostForm() {
       veg: data.veg,
       servings: parsed.data.servings,
       preparedAt: built.preparedAt,
+      tags: parsed.data.tags,
     });
     if (res.ok) {
       toast("Posted — NGOs can see it on the live board now.", "success");
@@ -155,7 +159,7 @@ export function PostForm() {
               {Object.entries(SAFE_WINDOWS).map(([key, w]) => {
                 const sel = type === key;
                 return (
-                  <label key={key} className="cursor-pointer rounded-btn focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--leaf)]">
+                  <label key={key} className="cursor-pointer rounded-btn focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--foreground)]">
                     <input
                       type="radio"
                       name="type"
@@ -213,7 +217,7 @@ export function PostForm() {
               ].map((o) => {
                 const sel = veg === o.value;
                 return (
-                  <label key={o.label} className="cursor-pointer rounded-btn focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--leaf)]">
+                  <label key={o.label} className="cursor-pointer rounded-btn focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--foreground)]">
                     <input
                       type="radio"
                       name="veg"
@@ -236,14 +240,51 @@ export function PostForm() {
             </div>
           </fieldset>
 
+          <fieldset className="rounded-card border border-line bg-surface p-4">
+            <legend className="px-1 font-mono text-xs uppercase tracking-wide text-muted">
+              Nutrition tags (help NGOs match the need)
+            </legend>
+            <div className="flex flex-wrap gap-2">
+              {NUTRITION_TAGS.map((t) => {
+                const on = tags.includes(t);
+                return (
+                  <label
+                    key={t}
+                    className={
+                      "inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 font-mono text-[13px] uppercase tracking-wide " +
+                      (on ? "border-transparent bg-foreground text-background" : "border-line bg-background text-foreground")
+                    }
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={on}
+                      onChange={() =>
+                        setTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]))
+                      }
+                    />
+                    {t}
+                    <span className="sr-only">
+                      {on ? "selected" : "not selected"} — links to the {t} card on the Nutrition hub
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+            <p className="mt-2 text-xs text-muted">
+              Tap a tag to preview the matching card ({" "}
+              {NUTRITION_TAGS.slice(0, 1).map((t) => `/nutrition#${TAG_ANCHORS[t]}`)} and friends).
+            </p>
+          </fieldset>
+
           {blocked && (
-            <p role="alert" className="rounded-card border border-chilli/50 bg-chilli/[0.06] px-3 py-2 text-sm text-foreground">
+            <p role="alert" className="rounded-card border-line-strong border-2 px-3 py-2 text-sm text-foreground">
               Too late for the board: under {MIN_POST_MINUTES} minutes of safe window left.
               Serve this fresh — posting is blocked so NGOs never chase food that spoils first.
             </p>
           )}
           {futureTime && !blocked && (
-            <p role="status" className="rounded-card border border-amber/50 bg-amber/[0.08] px-3 py-2 text-sm text-foreground">
+            <p role="status" className="rounded-card border border-line px-3 py-2 text-sm text-muted">
               The last-cooked time looks ahead of right now. Posting still works for the demo,
               but pick the actual time to make the preview honest.
             </p>

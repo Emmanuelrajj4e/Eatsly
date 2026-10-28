@@ -214,6 +214,7 @@ export function postListing(input: PostListingInput): PostResult {
     lat: area.lat,
     lng: area.lng,
     status: "open",
+    nutritionTags: input.tags?.filter(Boolean),
   };
   const posts = readJson<Listing[]>(KEYS.posts) ?? [];
   posts.push(listing);
