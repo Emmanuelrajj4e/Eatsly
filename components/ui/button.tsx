@@ -1,10 +1,15 @@
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "ghost";
 export type ButtonSize = "md" | "lg";
 
-/** Shared styles so <Link> can look like a Button too. All sizes ≥44px tall. */
+/**
+ * Monochrome button system.
+ * primary: solid ink fill, inverts on hover (ink outline, page fill)
+ * secondary: outlined, fills on hover
+ * ghost: quiet text button
+ */
 export function buttonStyles(
   variant: ButtonVariant = "primary",
   size: ButtonSize = "md",
@@ -12,13 +17,13 @@ export function buttonStyles(
 ) {
   return cn(
     "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-btn font-medium",
-    "transition duration-150 active:translate-y-px disabled:pointer-events-none disabled:opacity-50",
+    "transition-colors duration-150 active:translate-y-px disabled:pointer-events-none disabled:opacity-45",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--foreground)]",
     variant === "primary" &&
-      "bg-marigold text-marigold-ink hover:brightness-95 font-semibold",
+      "border border-transparent bg-foreground text-background hover:border-line-strong hover:bg-background hover:text-foreground",
     variant === "secondary" &&
-      "border border-line bg-surface text-foreground hover:bg-foreground/[0.04]",
-    variant === "ghost" && "text-foreground hover:bg-foreground/[0.06]",
-    variant === "danger" && "bg-chilli text-background hover:brightness-105",
+      "border border-line-strong bg-transparent text-foreground hover:bg-foreground hover:text-background",
+    variant === "ghost" && "text-foreground hover:bg-wash",
     size === "md" && "h-11 px-4 text-sm",
     size === "lg" && "h-12 px-6 text-base",
     className,

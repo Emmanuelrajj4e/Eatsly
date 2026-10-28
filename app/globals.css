@@ -1,61 +1,64 @@
 @import "tailwindcss";
+@import "@fontsource/syne/700.css";
+@import "@fontsource/syne/800.css";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
+@import "@fontsource/hanken-grotesk/400.css";
+@import "@fontsource/hanken-grotesk/500.css";
+@import "@fontsource/hanken-grotesk/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
 
-/* ---------- Annadaan design tokens ---------- */
+/* ---------- Eatsly design tokens: strictly achromatic ---------- */
 
 :root {
-  --bg: #f0f3ee; /* chalk */
+  --background: #ffffff;
+  --ink: #000000;
+  --foreground: #000000;
   --surface: #ffffff;
-  --ink: #13201b;
-  --muted: #52615a;
-  --line: #d2dad1;
-  --marigold: #f4b000;
-  --marigold-ink: #1a1405; /* text on marigold */
-  --leaf: #1e7b4b; /* good */
-  --leaf-flat: #1e7b4b; /* marker fills, constant both themes */
-  --nonveg-flat: #a1441f; /* marker fills, constant both themes */
-  --amber: #9a5b00; /* warning */
-  --chilli: #c03a22; /* critical */
-  --water: #7fa8c9; /* stylised map water */
-  --shadow-selected: 0 12px 32px rgb(19 32 27 / 0.16);
-  --radius-card: 6px;
-  --radius-btn: 8px;
+  --line: rgb(0 0 0 / 0.12); /* hairline rule */
+  --line-strong: #000000;
+  --muted: rgb(0 0 0 / 0.6);
+  --wash: rgb(0 0 0 / 0.03);
+  --dark-wash: rgb(255 255 255 / 0.08);
+  --radius-card: 0px; /* editorial: square corners */
+  --radius-btn: 0px;
+  --radius-chip: 0px;
 }
 
+/* inverted theme: same discipline, black page */
 .dark {
-  --bg: #0e1613;
-  --surface: #16211d;
-  --ink: #e8efe9;
-  --muted: #9aaaa1;
-  --line: #2a3a33;
-  --marigold: #f4b000;
-  --marigold-ink: #1a1405;
-  --leaf: #58be7f; /* lifted for 4.5:1 text on dark */
-  --amber: #e8a93e;
-  --chilli: #e4694f;
-  --water: #4a7ba6;
-  --shadow-selected: 0 12px 32px rgb(0 0 0 / 0.55);
+  --background: #000000;
+  --ink: #ffffff;
+  --foreground: #ffffff;
+  --surface: #000000;
+  --line: rgb(255 255 255 / 0.18);
+  --line-strong: #ffffff;
+  --muted: rgb(255 255 255 / 0.6);
+  --wash: rgb(255 255 255 / 0.06);
+  --dark-wash: rgb(0 0 0 / 0.35);
 }
 
 @theme inline {
-  --color-background: var(--bg);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
   --color-surface: var(--surface);
-  --color-foreground: var(--ink);
-  --color-muted: var(--muted);
   --color-line: var(--line);
-  --color-marigold: var(--marigold);
-  --color-marigold-ink: var(--marigold-ink);
-  --color-leaf: var(--leaf);
-  --color-amber: var(--amber);
-  --color-chilli: var(--chilli);
+  --color-line-strong: var(--line-strong);
+  --color-muted: var(--muted);
+  --color-wash: var(--wash);
+  --color-dark-wash: var(--dark-wash);
 
-  --font-display: var(--font-bricolage), "Bricolage Grotesque", "Arial Black", sans-serif;
-  --font-sans: var(--font-schibsted), "Schibsted Grotesk", system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+  --font-display: "Syne", "Avenir Next", "Segoe UI", sans-serif;
+  --font-quote: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-sans: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
 
   --radius-card: var(--radius-card);
   --radius-btn: var(--radius-btn);
-
-  --animate-pin-pulse: pin-pulse 1.6s ease-out infinite;
+  --radius-chip: var(--radius-chip);
 }
 
 /* ---------- base ---------- */
@@ -65,36 +68,96 @@ html {
 }
 
 body {
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.6;
+  max-width: 100vw;
 }
 
 ::selection {
-  background: var(--marigold);
-  color: var(--marigold-ink);
+  background: var(--foreground);
+  color: var(--background);
 }
 
-/* visible, high-contrast focus everywhere */
+/* visible focus: 2px ring in ink, separated by a gap so it reads on both themes */
 :focus-visible {
-  outline: 2px solid var(--leaf);
+  outline: 2px solid var(--foreground);
   outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--background);
 }
 
-/* numerals that hold width: use font-mono + tabular-nums utilities */
+/* monochrome scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--foreground) var(--background);
+}
 
-@keyframes pin-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.55;
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--foreground);
+  border: 3px solid var(--background);
+}
+
+/* grayscale photography treatment */
+.photo {
+  filter: grayscale(1) contrast(1.08);
+}
+.photo-wrap {
+  overflow: hidden;
+  background: var(--wash);
+}
+
+/* fine-grain placeholder block for missing photos */
+.pattern-image {
+  background-image: repeating-linear-gradient(
+      45deg,
+      var(--foreground) 0 1px,
+      transparent 1px 6px
+    ),
+    repeating-linear-gradient(-45deg, var(--foreground) 0 1px, transparent 1px 9px);
+  background-size: 12px 12px;
+  background-color: var(--background);
+  opacity: 0.35;
+}
+
+/* diagonal-stripe progress bar for URGENT state */
+.bar-striped {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--foreground) 0 6px,
+    var(--background) 6px 12px
+  );
+  background-color: var(--background);
+  animation: barber 0.9s linear infinite;
+}
+@keyframes barber {
+  from {
+    background-position: 0 0;
   }
-  70% {
-    transform: scale(2.2);
-    opacity: 0;
+  to {
+    background-position: 24px 0;
   }
-  100% {
-    transform: scale(2.2);
-    opacity: 0;
+}
+
+/* marquee for the live ticker */
+.mask-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 
@@ -108,14 +171,57 @@ body {
     transform: translateY(0);
   }
 }
-
 .fade-up {
   animation: fade-up 0.55s ease-out both;
+}
+
+/* pulsing ring: urgent map markers + LIVE badge */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 1.6s ease-out infinite;
+}
+
+/* Leaflet monochrome treatment */
+.leaflet-container {
+  background: var(--background);
+  font-family: var(--font-mono), monospace;
+}
+.leaflet-container .leaflet-tile {
+  filter: grayscale(1) contrast(1.08);
+}
+.leaflet-control-attribution {
+  background: var(--background) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+}
+.leaflet-control-attribution a {
+  color: var(--foreground) !important;
+}
+.leaflet-bar a {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+  border-color: var(--line) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .mask-marquee {
+    animation-duration: 120s;
   }
   *,
   *::before,

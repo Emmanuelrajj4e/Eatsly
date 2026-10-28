@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { cn } from "@/lib/utils";
-import { AlertIcon, CheckIcon, InfoIcon } from "@/components/icons";
+import { Check, CircleAlert, Info } from "lucide-react";
 
 type Tone = "success" | "error" | "info";
 
@@ -24,7 +24,7 @@ export function useToast() {
   return useContext(ToastContext);
 }
 
-/** Announce confirmations politely; screen readers hear them without focus moves. */
+/** Announce confirmations politely; icons are form (glyph ≠ colour-only). */
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const nextId = useRef(1);
@@ -49,15 +49,15 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             className={cn(
-              "pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-card border bg-surface px-4 py-3 text-sm shadow-[var(--shadow-selected)] fade-up",
-              t.tone === "success" && "border-leaf/40",
-              t.tone === "error" && "border-chilli/50",
+              "pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-card border bg-background px-4 py-3 text-sm fade-up",
+              t.tone === "success" && "border-line-strong",
+              t.tone === "error" && "border-foreground border-2",
               t.tone === "info" && "border-line",
             )}
           >
-            {t.tone === "success" && <CheckIcon className="h-5 w-5 shrink-0 text-leaf" />}
-            {t.tone === "error" && <AlertIcon className="h-5 w-5 shrink-0 text-chilli" />}
-            {t.tone === "info" && <InfoIcon className="h-5 w-5 shrink-0 text-muted" />}
+            {t.tone === "success" && <Check className="h-5 w-5 shrink-0" strokeWidth={1.5} />}
+            {t.tone === "error" && <CircleAlert className="h-5 w-5 shrink-0" strokeWidth={1.5} />}
+            {t.tone === "info" && <Info className="h-5 w-5 shrink-0" strokeWidth={1.5} />}
             <span>{t.message}</span>
           </div>
         ))}

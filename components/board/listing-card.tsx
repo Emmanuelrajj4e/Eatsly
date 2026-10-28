@@ -61,7 +61,6 @@ export function ListingCard({
 
   return (
     <Card
-      selected={selected}
       data-selected={selected || undefined}
       className={cn(
         "cursor-pointer transition-colors",

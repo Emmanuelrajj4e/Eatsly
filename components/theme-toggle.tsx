@@ -1,23 +1,27 @@
 "use client";
 
 import { useTheme } from "@/components/theme-provider";
-import { MoonIcon, SunIcon } from "@/components/icons";
+import { SunIcon, MoonIcon } from "lucide-react";
 
-export function ThemeToggle() {
+/** Theme toggle: light (white page) or inverted (black page). Both monochrome. */
+export function ThemeToggle({ compact = false }: { compact?: boolean }) {
   const { theme, toggle } = useTheme();
   const next = theme === "dark" ? "light" : "dark";
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={`Switch to ${next} theme`}
-      title={`Switch to ${next} theme`}
-      className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-btn border border-line bg-surface text-foreground transition-colors hover:bg-foreground/[0.05]"
+      aria-label={`Switch to ${next === "dark" ? "inverted" : "light"} theme`}
+      title={`Switch to ${next === "dark" ? "inverted" : "light"} theme`}
+      className={
+        "grid cursor-pointer place-items-center border border-line bg-surface text-foreground transition-colors hover:border-line-strong hover:bg-wash " +
+        (compact ? "h-11 w-11" : "h-11 w-11")
+      }
     >
       {theme === "dark" ? (
-        <SunIcon className="h-5 w-5" />
+        <SunIcon className="h-5 w-5" strokeWidth={1.5} />
       ) : (
-        <MoonIcon className="h-5 w-5" />
+        <MoonIcon className="h-5 w-5" strokeWidth={1.5} />
       )}
     </button>
   );

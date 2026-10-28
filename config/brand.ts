@@ -1,12 +1,16 @@
-/** Single place to rename or re-tune the product. */
+/** Single place to rename or re-tune the product. Eatsly, strictly monochrome. */
 
-export const APP_NAME = "Annadaan";
-/** Hero tagline. */
-export const APP_TAGLINE = "Good food has a clock.";
-export const APP_HASHTAG = "#AnnadaanClock";
+export const APP_NAME = "Eatsly";
+export const APP_TAGLINE = "Every plate, on time.";
+/** Hero headline (set in Instrument Serif italic). Featured as a quote, not attributed. */
+export const HERO_QUOTE = "No food should expire before it finds a plate.";
+/** Alternate original lines for section headings. */
+export const QUOTE_SURPLUS =
+  "Surplus is only waste if nobody is watching the clock.";
+export const QUOTE_NUTRITION = "Nutrition is not a luxury. It is the first lesson.";
 export const APP_MISSION =
-  "Annadaan puts a live safety clock on every surplus meal, so donors, NGOs and volunteers in Hyderabad can save food before it spoils.";
-
+  "Eatsly gives every surplus meal a live safety clock in Hyderabad, so donors post it, NGOs claim it while it is still safe, and volunteers carry it to a plate.";
+export const APP_HASHTAG = "#EveryPlateOnTime";
 export const CITY = "Hyderabad";
 
 /** Weight estimate per serving, kg. */
@@ -33,4 +37,25 @@ export const SAFE_WINDOWS: Record<
   produce: { label: "Fresh produce", minutes: 48 * 60 },
 };
 
-export type SafeWindowKey = keyof typeof SAFE_WINDOWS;
+/** Known nutrition tags linking board listings to the Nutrition hub. */
+export const NUTRITION_TAGS = [
+  "Carb-rich",
+  "Protein-rich",
+  "Fibre",
+  "Vitamin-rich",
+] as const;
+
+/* Sample ticker events (landing strip). */
+export const TICKER_EVENTS = [
+  "LIVE · 120 servings claimed, Banjara Hills",
+  "LIVE · 40 servings claimed, Charminar",
+  "LIVE · Delivered, Uppal",
+  "LIVE · 30 servings claimed, Secunderabad",
+  "LIVE · Volunteer assigned, Madhapur",
+  "LIVE · Delivered, LB Nagar",
+  "LIVE · 50 servings claimed, Gachibowli",
+  "LIVE · Picked up, Begumpet",
+];
+
+/** Featured demo tracking ID (drives the tracking page + drawer demo). */
+export const DEMO_TRACKING_ID = "ETS-2041";
