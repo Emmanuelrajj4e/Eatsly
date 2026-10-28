@@ -5,6 +5,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { routeFor } from "@/services/tracking";
 
+const CENTER: [number, number] = [17.404, 78.467];
+
 /**
  * Tracking map: dashed blue route whose travelled part is green, volunteer
  * marker (blue, pulsing) moving along the path, green NGO diamond at the
@@ -20,7 +22,11 @@ export default function TrackMap({ id, progress }: { id: string; progress: numbe
 
   useEffect(() => {
     if (mapRef.current || !divRef.current) return;
+    // A map created without an initial view throws "Set map center and zoom
+    // first." the instant a tile layer is added — always open with a view.
     const map = L.map(divRef.current, {
+      center: CENTER,
+      zoom: 12,
       scrollWheelZoom: false,
       zoomControl: true,
       keyboard: true,
@@ -34,6 +40,11 @@ export default function TrackMap({ id, progress }: { id: string; progress: numbe
     return () => {
       map.remove();
       mapRef.current = null;
+      // The route overlays belong to this map instance — dropping the stale
+      // refs makes a remount rebuild (and re-frame) them on the fresh map.
+      baseRef.current = null;
+      solidRef.current = null;
+      bikeRef.current = null;
     };
   }, []);
 
