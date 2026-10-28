@@ -33,22 +33,30 @@ export function NutritionTeaser() {
             What did today&apos;s plate do for you?
           </h2>
         </div>
-        <Link href="/nutrition" className={buttonStyles("secondary", "md")}>
+        <Link href="/nutrition" className={buttonStyles("primary", "md")}>
           Open the full Plate Builder
-          <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+          <ArrowRight className="h-4 w-4" strokeWidth={2} />
         </Link>
       </div>
 
       <Card className="mt-6 grid items-center gap-6 sm:grid-cols-[minmax(0,200px)_1fr]">
         <svg role="img" aria-label={`Sample thali with ${plate.map((f) => f.name).join(", ")}`} viewBox="0 0 220 220" className="mx-auto h-auto w-full max-w-[200px]">
-          <circle cx="110" cy="110" r="100" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="2.5" />
+          <circle cx="110" cy="110" r="100" fill="var(--surface)" stroke="var(--green)" strokeWidth="3" />
+          <circle cx="110" cy="110" r="88" fill="none" stroke="var(--blue-tint)" strokeDasharray="3 5" />
           {plate.map((f, i) => {
             const angle = (i / plate.length) * Math.PI * 2 - Math.PI / 2;
             const cx = 110 + Math.cos(angle) * 62;
             const cy = 110 + Math.sin(angle) * 62;
             return (
               <g key={f.name}>
-                <circle cx={cx} cy={cy} r="20" fill="var(--background)" stroke="var(--foreground)" strokeWidth="1.8" />
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r="20"
+                  fill={["var(--yellow-tint)", "var(--orange-tint)", "var(--green-tint)", "var(--blue-tint)", "var(--red-tint)"][i % 5]}
+                  stroke="var(--ink)"
+                  strokeWidth="1.5"
+                />
                 <text x={cx} y={cy + 4} textAnchor="middle" fontSize="11" fontFamily="var(--font-mono)">
                   {f.name.slice(0, 2).toUpperCase()}
                 </text>
@@ -59,7 +67,7 @@ export function NutritionTeaser() {
 
         <div>
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {BARS.map((b) => {
+            {BARS.map((b, i) => {
               const share = Math.min(1, (totals[b.key] ?? 0) / b.target);
               return (
                 <li key={b.key}>
@@ -70,8 +78,11 @@ export function NutritionTeaser() {
                       <span className="text-muted"> {b.unit}</span>
                     </span>
                   </p>
-                  <div className="mt-1 h-2 border border-line" aria-hidden="true">
-                    <div className={cn("h-full bg-foreground")} style={{ width: `${share * 100}%` }} />
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-wash" aria-hidden="true">
+                    <div
+                      className={cn("h-full rounded-full", ["bg-yellow", "bg-orange", "bg-green"][i])}
+                      style={{ width: `${share * 100}%` }}
+                    />
                   </div>
                 </li>
               );

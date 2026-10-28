@@ -21,12 +21,34 @@ const TARGETS: Record<string, { item: keyof Food; unit: string; label: string; t
   calcium: { item: "calcium", unit: "mg", label: "Calcium", target: 350 },
 };
 
+/* Bar colours follow the nutrient-group palette:
+   carbohydrates yellow · protein orange · fats red · fibre green ·
+   vitamins blue · minerals ink. Labels always ride along. */
+const BAR_TONES: Record<string, string> = {
+  kcal: "bg-yellow",
+  protein: "bg-orange",
+  carbs: "bg-yellow",
+  fat: "bg-red/70",
+  fibre: "bg-green",
+  iron: "bg-ink",
+  calcium: "bg-ink",
+};
+
+const THALI_TINTS = [
+  "var(--orange-tint)",
+  "var(--green-tint)",
+  "var(--blue-tint)",
+  "var(--yellow-tint)",
+  "var(--red-tint)",
+  "#E3E8E5",
+];
+
 const FOODS = data.foods as Food[];
 
 /**
- * The Plate Builder: tap foods onto a thali drawn in SVG; the bars for
- * energy, protein, carbs, fat, fibre, iron and calcium update live with a
- * plain-language balance note — never a numeric score.
+ * The Plate Builder: tap foods onto a colourful thali drawn in SVG; the bars
+ * for energy, protein, carbs, fat, fibre, iron and calcium update live with
+ * a plain-language balance note — never a numeric score.
  */
 export function PlateBuilder({ compact = false }: { compact?: boolean }) {
   const [plate, setPlate] = useState<Food[]>(() => FOODS.slice(0, 3) as Food[]);
@@ -56,7 +78,7 @@ export function PlateBuilder({ compact = false }: { compact?: boolean }) {
 
   return (
     <Card className={cn("grid gap-6", compact ? "sm:grid-cols-[minmax(0,240px)_1fr]" : "lg:grid-cols-[minmax(0,260px)_1fr] lg:gap-8")}>
-      {/* thali */}
+      {/* thali: green rim, blue inner ring, tinted bowls */}
       <figure className="m-0">
         <svg
           role="img"
@@ -64,8 +86,8 @@ export function PlateBuilder({ compact = false }: { compact?: boolean }) {
           viewBox="0 0 220 220"
           className="mx-auto h-auto w-full max-w-[240px]"
         >
-          <circle cx="110" cy="110" r="100" fill="var(--surface)" stroke="var(--line-strong)" strokeWidth="2.5" />
-          <circle cx="110" cy="110" r="88" fill="none" stroke="var(--line)" strokeDasharray="3 5" />
+          <circle cx="110" cy="110" r="100" fill="var(--surface)" stroke="var(--green)" strokeWidth="3" />
+          <circle cx="110" cy="110" r="88" fill="none" stroke="var(--blue-tint)" strokeDasharray="3 5" />
           {plate.map((f, i) => {
             const angle = (i / Math.max(plate.length, 3)) * Math.PI * 2 - Math.PI / 2;
             const cx = 110 + Math.cos(angle) * 62;
@@ -73,8 +95,15 @@ export function PlateBuilder({ compact = false }: { compact?: boolean }) {
             const initials = f.name.slice(0, 2).toUpperCase();
             return (
               <g key={f.name}>
-                <circle cx={cx} cy={cy} r="20" fill="var(--background)" stroke="var(--foreground)" strokeWidth="1.8" />
-                <text x={cx} y={cy + 4} textAnchor="middle" fontSize="11" fontFamily="var(--font-mono)" fill="var(--foreground)">
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r="20"
+                  fill={THALI_TINTS[i % THALI_TINTS.length]}
+                  stroke="var(--ink)"
+                  strokeWidth="1.5"
+                />
+                <text x={cx} y={cy + 4} textAnchor="middle" fontSize="11" fontFamily="var(--font-mono)" fill="var(--ink)">
                   {initials}
                 </text>
               </g>
@@ -107,8 +136,11 @@ export function PlateBuilder({ compact = false }: { compact?: boolean }) {
                       <span className="text-muted"> {t.unit}</span>
                     </span>
                   </p>
-                  <div className="mt-1 h-2 border border-line" aria-hidden="true">
-                    <div className="h-full bg-foreground" style={{ width: `${share * 100}%` }} />
+                  <div className="mt-1 h-2 overflow-hidden rounded-full bg-wash" aria-hidden="true">
+                    <div
+                      className={cn("h-full rounded-full", BAR_TONES[key] ?? "bg-ink")}
+                      style={{ width: `${share * 100}%` }}
+                    />
                   </div>
                   <p className="sr-only">{Math.round((value / t.target) * 100)}% of the approximate per-meal target.</p>
                 </li>
@@ -121,7 +153,7 @@ export function PlateBuilder({ compact = false }: { compact?: boolean }) {
         <ul aria-live="polite" className="mt-3 space-y-1 text-sm leading-6">
           {notes.map((n) => (
             <li key={n} className="flex items-start gap-2">
-              <Plus className="mt-1 h-3.5 w-3.5 shrink-0 text-muted" strokeWidth={2} />
+              <Plus className="mt-1 h-3.5 w-3.5 shrink-0 text-green" strokeWidth={2.5} />
               <span>{n}</span>
             </li>
           ))}
@@ -142,14 +174,14 @@ export function PlateBuilder({ compact = false }: { compact?: boolean }) {
                     aria-pressed={on}
                     onClick={() => toggle(f)}
                     className={cn(
-                      "inline-flex h-11 cursor-pointer items-center gap-1.5 border px-3 font-mono text-xs transition-colors",
+                      "inline-flex h-11 cursor-pointer items-center gap-1.5 rounded-full border px-3 font-mono text-xs transition-colors",
                       on
-                        ? "border-transparent bg-foreground text-background"
+                        ? "border-green bg-green-tint text-ink"
                         : "border-line bg-surface text-foreground hover:bg-wash",
                     )}
                   >
                     {f.name}
-                    {on && <X className="h-3.5 w-3.5" strokeWidth={2} />}
+                    {on && <X className="h-3.5 w-3.5 text-green" strokeWidth={2.5} />}
                   </button>
                 </li>
               );
