@@ -27,7 +27,8 @@ export function CityBreakdown() {
         <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Sample data</p>
       </div>
 
-      <table className="mt-6 w-full border-collapse text-sm">
+      <div className="mt-6 overflow-x-auto">
+        <table className="mt-0 w-full min-w-[420px] border-collapse text-sm">
         <caption className="sr-only">
           {CITY} areas with active donor units and NGO partners (sample data)
         </caption>
@@ -53,6 +54,7 @@ export function CityBreakdown() {
           </tr>
         </tbody>
       </table>
+      </div>
       <p className="mt-3 text-xs text-muted">
         Sample network across {rows.length} {CITY} areas — illustrative numbers for the
         demo, not a census.

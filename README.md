@@ -1,13 +1,16 @@
-# Annadaan — good food has a clock
+# Eatsly — every plate, on time
 
-**Annadaan** is a live food-rescue board for Hyderabad: donors post surplus food, NGOs
-claim it against a hard food-safety countdown, and volunteers move each run from
-*Claimed → Picked up → Delivered*. A listing can be claimed only while an NGO can still
-reach it — pickup ETA must land **at least 10 minutes** before the safe window closes.
+**Eatsly** is a live food-rescue platform, built monochrome. Donors post surplus with a
+started safe-time clock; NGOs claim a run only when a volunteer can reach it **at least
+10 minutes before** the window ends; tracking shows every stage (posted → claimed →
+volunteer assigned → picked up → in transit → delivered) with a moving marker, an ETA
+countdown and proof of delivery. A nutrition hub explains what the rescued plate should
+do for the person eating it.
 
 > Everything on the site is **sample data** for a hackathon demo. Bracketed items
 > (`[Registration number]`, address, contact) are deliberate placeholders for legal
-> details. No registrations, certifications or tax claims are implied.
+> details. No registrations, certifications or tax claims are implied. Track quotes,
+> stories and statistics carry their own source notes on the page.
 
 ## Run it
 
@@ -19,62 +22,93 @@ npm run dev      # http://localhost:3000
 Production check:
 
 ```bash
-npm run build    # verifies TypeScript + prerenders all routes
-npm run start    # serves the production build
+npm run build    # TypeScript + prerender (all routes static; /track/[id] partial-prerender)
+npm run start    # serve the production build
 npm run lint     # eslint (0 problems expected)
 ```
 
 No API keys, no backend, no database. Demo state persists in `localStorage` and syncs
 across browser tabs via `BroadcastChannel`.
 
-## The demo, in one lap
+## Design system — strictly black and white
 
-1. **Home `/`** — hero with a live “Next to spoil” countdown ring, three-step how-it-works, animated impact counters, city breakdown, sample stories, trust-heavy footer (placeholders bracketed).
-2. **Live board `/board`** (*the signature feature*) — filters (All / Under 1 hour / Veg only / Packaged), cards sorted by time left with mono `HH:MM:SS` countdowns (bar degrades amber < 90 min, red < 30), nearest NGO + ETA per card, stylised Hyderabad map with pulsing pins and dashed routes. Tap **Claim food** → the dialog lists NGOs by distance; NGOs that would arrive too late are **disabled with the reason**. After claiming, the card shows the tracker; **Mark picked up / Mark delivered** advance it. Expired listings grey out with “Safe window closed”.
-3. **Post surplus `/post`** — Zod-validated form with a **live preview** (safe-until clock, ticking countdown, estimated kg, nearest NGO + ETA). Posting is **blocked under 20 minutes** of safe window, with the explanation on screen.
-4. **Impact `/impact`** — counters (meals rescued today, servings waiting now, kg saved) and a 7-day bar chart that **move the moment** a claim or delivery happens.
-5. **For NGOs & volunteers `/network`** — active runs with clocks and the pickup/delivery flow, plus a one-card NGO onboarding (name, area, vehicle, contact) that really joins the network: the new diamond shows up on the map and in claim dialogs.
+- Achromatic only: `#000`, `#fff`, and ink at opacities (hairlines 12%, muted 60%).
+  State is encoded by **form**, never hue: URGENT = inverted black card + striped bar;
+  SOON = 2px border; claimed = ring + check label; expired = dotted border + 50% opacity.
+- Typography (installed offline via `@fontsource`): **Syne** (display), **Instrument
+  Serif** (quotes), **Hanken Grotesk** (body), **IBM Plex Mono** (labels, countdowns,
+  IDs — tabular numerals).
+- Radius: cards/buttons 0–2px. No gradients, no drop shadows, no emoji. Icons are
+  `lucide-react` or inline SVG at 1.5px stroke, monochrome.
+- Full-black sections create rhythm; one orchestrated hero sequence on load; marquee
+  ticker on the home strip; `prefers-reduced-motion` collapses animation.
+- Map: Leaflet + OpenStreetMap tiles rendered grayscale by CSS, black/white custom
+  markers; if tiles fail it swaps to the stylised **SVG Hyderabad fallback map**. The
+  fallback and all markers are keyboard-operable.
 
-## Safe-window rules
+## The demo lap
 
-| Food type | Window | Applied from |
-| --- | --- | --- |
-| Hot cooked | 4 h | last-cooked time |
-| Sweets & dry | 12 h | last-cooked time |
-| Packaged | 24 h | last-cooked time |
-| Fresh produce | 48 h | last-cooked time |
-
-Claim gate: `ETA ≤ (time left − 10 min)`. ETA assumes ~18 km/h city riding plus a
-7-minute handover buffer. Weight is estimated at **0.38 kg per serving**.
+1. **Home `/`** — live ticker strip; hero quote with an orchestrated sequence; live
+   “Next to spoil” ring + mini run preview; who it serves; full-black mission; animated
+   sample impact counters; Post→Claim→Track→Serve; **embedded live tracking preview**
+   (speed it up / reset); nutrition teaser; sourced “why it matters” editorial; city
+   table; sample voices; FAQ; final CTA.
+2. **Live board `/board`** — filters (All / Under 1 hour / Veg / Packaged / High
+   protein), cards sorted by time left with countdown bars, diet markers, kg estimate,
+   nutrition tags deep-linking into `/nutrition#nut-*`. Claim dialog lists NGOs by
+   distance — **too-late NGOs are disabled with the reason shown**. Claimed cards carry
+   the tracker + **Track live** drawer.
+3. **Live tracking `/track/[id]`** — the signature page: stages, moving route marker
+   (dashed→solid), LIVE pulsing, ETA + distance left, volunteer card with masked phone,
+   proof of delivery, copy-link, and **demo controls (1x / 5x / 20x + reset)** in a
+   small panel. Featured run: **ETS-2041**.
+4. **Post surplus `/post`** — Zod-validated form (dish, donor, area, type, servings,
+   last-cooked, veg/non-veg, nutrition tags) with live preview: safe-until clock,
+   countdown bar, estimated kg, nearest NGO + ETA. **Blocked under 20 minutes** of safe
+   window left, with the reason on screen.
+5. **Nutrition `/nutrition`** — nutrient explorer (macro/micro tabs, ICMR-NIN cited,
+   “general information, not medical advice”), the **Plate Builder** (16 Indian foods on
+   a thali, live bars, plain-language notes — never a score), and the why-timing-matters
+   explainer.
+6. **Impact `/impact`** — animated counters + 7-day monochrome chart (hatched today
+   bar) that move live as runs are claimed and delivered.
+7. **NGOs & volunteers `/ngo`** — active runs with clocks, pickup/delivery marking,
+   onboarding card that really joins the network (new diamond appears on map + dialogs),
+   and its own tracking drawer.
 
 ## Architecture
 
-- **Next.js 16 (App Router, `cacheComponents`/PPR)** + TypeScript + Tailwind CSS v4 + **zod**. Fonts via `next/font`: Bricolage Grotesque (display), Schibsted Grotesk (body), JetBrains Mono (numbers/labels).
-- **Service layer is the API seam**: `services/listings.ts`, `services/ngos.ts`, `services/impact.ts`, `services/geo.ts` read seed JSON and persist mutations, so a real backend can replace the store without touching components.
-- Demo state keys: `annadaan:overrides:v1` (claims/trackers), `annadaan:posts:v1` (posted listings), `annadaan:ngos:v1` (onboarded NGOs). Theme: `annadaan-theme`.
-- Seed listings carry **relative offsets** (`minutesAgo`), so every session opens with freshly dramatic countdowns; user mutations persist.
-- One shared **1 Hz ticker** (`hooks/use-ticker.ts`, `useSyncExternalStore`) drives every countdown — no per-card timers.
+- `services/` — the only state layer (swap for an API without touching components):
+  `listings.ts` (seed derivation + localStorage overrides + claims/progress/posts),
+  `tracking.ts` (TrackingService: `get/subscribe(id, cb)` + simulation engine with
+  speed multiplier and reset), `impact.ts`, `ngos.ts`, `geo.ts` (windows, ETA, map
+  projection), `storage.ts` (localStorage + BroadcastChannel helpers).
+- `data/` — seed JSON: listings (with `minutesAgo` offsets so countdowns are always
+  fresh on load), areas, ngos, impact baselines, nutrition, city.
+- `hooks/` — `use-ticker` (ONE shared 1 Hz clock via `useSyncExternalStore`), `use-board`
+  (rAF-deferred first read: `Date.now()` is not allowed during prerender), `use-count-up`.
+- `components/` — `ui/` kit (Button, Card, Dialog, Toast, Tabs, Accordion, DietMarker,
+  CountdownBar, Counter, Chip), `board/` (view, cards, claim dialog, Leaflet map +
+  SVG fallback, tracker, drawer), `track/` (panel, timeline, map, demo controls),
+  `nutrition/`, `post/`, `impact/`, `ngo/`, `landing/`.
+- Fonts ship from `@fontsource/*` (offline, no runtime Google Fonts).
 
-```
-app/            routes (/ , /board , /post , /impact , /network , not-found)
-components/
-  ui/           Button, Chip, Card, Dialog, Toast, DietMarker
-  home/         hero (live ring), how-it-works, impact strip, city, stories
-  board/        board view, listing card, countdown bar, claim dialog, tracker, SVG map
-  post/         form + live preview + safe-window rules
-  impact/       dashboard (stat cards + 7-day SVG chart)
-  network/      active runs + NGO onboarding
-  icons.tsx     inline SVG icon set (no emoji icons anywhere)
-config/brand.ts single place to rename the product + window/speed/buffer constants
-data/           seed JSON (listings, NGOs, areas, city stats, impact baseline)
-services/       listings, ngos, impact, geo, storage (localStorage + tab sync)
-hooks/          use-ticker (shared clock), use-board, use-count-up
-types/          domain models
-```
+## Demo keys
 
-## Accessibility & quality notes
+Demo state lives in `localStorage` (`eatsly:overrides:v1`, `eatsly:posts:v1`,
+`eatsly:ngos:v1`) with channels `eatsly` / `eatsly-ngos`; theme key `eatsly-theme`.
+Clear those to reseed the demo.
 
-- Mobile-first; every interactive target ≥ 44 px; no horizontal scroll at 360 px.
-- Visible focus ring on every control, labels on every input, `role=dialog` trap with Escape, keyboard-operable map pins (Tab + Enter), `aria-live` regions for toasts and board counts, `prefers-reduced-motion` respected (counters land instantly, pulses stop).
-- All interactive areas remain within 4.5:1 contrast in light **and** dark themes.
-- Production build prerenders all routes; runtime reads (`Date.now()`, `localStorage`) are deferred behind mount effects so the static shell never disagrees with the client.
+## Images
+
+All photography ships as monochrome pattern placeholder blocks so the layout works
+today. To drop real photos in, see **IMAGES_NEEDED.md** (filenames, subjects,
+orientations, search terms, licensing notes for credits).
+
+## Quality bar
+
+Mobile-first (360px, no horizontal scroll), ≥44px touch targets, visible 2px focus
+rings with a white gap, labels on every input, `aria-live` on toasts/board/tracking
+announcements, keyboard-operable tabs/accordions/dialogs/map pins, ≥4.5:1 contrast in
+both themes, every screen opens with sample data, and a strict no-colour audit across
+CSS, SVG, chart code and meta theme-color.

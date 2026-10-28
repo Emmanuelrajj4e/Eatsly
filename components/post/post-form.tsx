@@ -319,7 +319,7 @@ function Field({
       </span>
       {children}
       {error && (
-        <span id={`${idBase}-e`} role="alert" className="mt-1 block text-xs font-medium text-chilli">
+        <span id={`${idBase}-e`} role="alert" className="mt-1 block text-xs font-medium">
           {error}
         </span>
       )}

@@ -1,54 +1,56 @@
-# Annadaan — 3-minute pitch
+# Eatsly — pitch script (~3 min)
 
-**Tagline: “Good food has a clock.” · Sample product for a hackathon demo · #AnnadaanClock**
+**Tagline: “Every plate, on time.” · Sample product for a hackathon demo · #EveryPlateOnTime**
 
-## The problem (30 s)
+## 0:00 — The problem (30 s)
 
-In any Indian city, hotels, wedding halls, hostels and canteens throw away tons of safe,
-edible food every day — not because nobody wants it, but because **no one can tell if it
-is still safe by the time it reaches a serving line**. Every rescue call is a guess about
-time, and volunteers stop guessing after being late once.
+Every evening, hotels, wedding halls, hostels and canteens in Hyderabad have safe,
+edible food left over. The same evening, a community kitchen a few kilometres away
+worries about the second serving line. Nothing is wrong with the food — the problem is
+that **no one can tell whether it is still safe by the time it arrives**. Rescue becomes
+a guess about time, and NGOs stop guessing after being late once.
 
-## The idea (30 s)
+## 0:30 — The one rule that fixes it (20 s)
 
-Annadaan puts a **transparent, honest clock on every meal**:
+Every surplus batch gets a **started safe-time clock** the moment it is posted:
+hot cooked 4 h, sweets 12 h, packaged 24 h, produce 48 h. Claims are accepted only when
+the volunteer’s ETA lands **at least 10 minutes before** the window ends — and under 20
+minutes left, posting is blocked entirely. Safety is enforced by arithmetic, not trust.
 
-- Hot cooked food **4 h**, sweets & dry **12 h**, packaged **24 h**, produce **48 h**.
-- NGOs can claim only if their pickup **ETA lands ≥ 10 minutes** before the window ends —
-  the UI disables NGO options that cannot make it and says exactly why.
-- The whole city sees the same live board: countdowns, routes, one tracker per meal.
+## 0:50 — Demo beat 1: the board (30 s)
 
-## Why platforms with drivers didn’t do this (30 s)
+First the landing hero — “No food should expire before it finds a plate” — with a live
+**Next to spoil** ring. Then the live board: filters, nearest NGO + ETA on every card,
+and the claim dialog that **disables NGOs that would arrive too late, with the reason
+shown**. Claim one: the card flips to Claimed with a live tracker.
 
-Food rescue fails on *promise* mismatch, not on logistics. Rigid delivery networks
-promise timings that cooked food cannot keep. Annadaan flips the contract: **the clock
-selects who may claim what**, so no rescue run is doomed from the minute it starts.
-Volunteers in the demo claim runs that arrive in time, and impact counts only when a
-delivery is actually marked.
+## 1:20 — Demo beat 2: the signature page (45 s)
 
-## Live demo beats (90 s)
+Open **Track ETS-2041**. The ride is simulated but behaves like a delivery app:
+stages with timestamps (Posted → Claimed → Volunteer assigned → Picked up → In transit
+→ Delivered), a map where the dashed route turns solid under a moving volunteer marker,
+an ETA countdown, a volunteer card with a **masked phone**, and **proof of delivery** at
+the end. Press the demo controls: **5x or 20x** speed to fast-forward the ride — the
+boards, drawers and impact numbers all move with it. Click **Copy tracking link** —
+the point for donors: “watch your food actually reach someone.”
 
-1. **Home** — the “Next to spoil” ring ticking down, counters animating in, city grid.
-2. **Live board** — sort by time left; show the amber→red countdown bar; open a claim
-   dialog, watch an NGO get disabled (“arrives 9 min after cutoff”); claim one.
-3. **Tracker** — “Mark picked up” on the board (or the For-NGOs page) and watch the
-   impact dashboard’s *servings waiting* and *kg saved* move live.
-4. **Post surplus** — post a batch with a really-late cook time and show the honest
-   **“too late to post under 20 minutes”** block, then post a fresh batch that lands on
-   the board instantly.
-5. **For NGOs** — onboard “Madhapur Roti Bank” in 20 seconds; its diamond appears on the
-   map and in claim dialogs.
+## 2:05 — Demo beat 3: nutrition (30 s)
 
-## What the demo is honest about
+Switch to the **Plate Builder**. Nutrition is not an afterthought node on this app —
+the brief is that **“Nutrition is not a luxury. It is the first lesson.”** Board cards
+carry nutrition tags that deep-link into real nutrient cards; the builder turns a thali
+into bars and a **plain-language note — never a score** — with ICMR-NIN cited,
+“general information, not medical advice” on the page.
 
-- All listings, NGOs, names and impact numbers are **sample data**, clearly labelled.
-- Bracketed footer items (`[Registration number]`, address, contacts) are placeholders —
-  no invented certifications.
-- The store is a service-layer demo (`services/*` + localStorage); swapping in a real
-  backend touches only that folder.
+## 2:35 — Close (20 s)
 
-## Ask
+The monochrome design is deliberate: **a clock, not a colour scheme** — urgency is a
+striped inverting card, safety is arithmetic, and everything is auditable in black and
+white. Every screen carries sample data, bracketed placeholders are the only things we
+do not claim. **Surplus is only waste if nobody is watching the clock.**
 
-A pilot city grant of three months: seed 50 donor kitchens, 10 NGOs, 20 volunteer rides
-per week in Hyderabad — measured by the same three numbers the site already computes live:
-**meals rescued, servings waiting, kg saved from the bin.**
+## What a real build adds
+
+Push notifications to regional volunteers, actual volunteer GPS (the TrackingService
+interface exists precisely so the simulation can be swapped out), NGO verification, and
+photo credits where IMAGES_NEEDED.md lists them.

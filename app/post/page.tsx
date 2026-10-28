@@ -15,7 +15,7 @@ export default function PostPage() {
             Post surplus
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Tell the board what you have and when it was cooked. Annadaan sets the safe
+            Tell the board what you have and when it was cooked. Eatsly sets the safe
             window, estimates the weight and names the NGO that can make it — you only
             press one button.
           </p>
