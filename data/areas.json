@@ -1,0 +1,13 @@
+[
+  { "name": "Kukatpally", "lat": 17.4849, "lng": 78.4138 },
+  { "name": "Secunderabad", "lat": 17.4399, "lng": 78.4983 },
+  { "name": "Begumpet", "lat": 17.4459, "lng": 78.4689 },
+  { "name": "Ameerpet", "lat": 17.4374, "lng": 78.4487 },
+  { "name": "Madhapur", "lat": 17.4483, "lng": 78.3915 },
+  { "name": "Jubilee Hills", "lat": 17.4239, "lng": 78.4098 },
+  { "name": "Banjara Hills", "lat": 17.4126, "lng": 78.4361 },
+  { "name": "Gachibowli", "lat": 17.4401, "lng": 78.3489 },
+  { "name": "Charminar", "lat": 17.3616, "lng": 78.4747 },
+  { "name": "LB Nagar", "lat": 17.3457, "lng": 78.5522 },
+  { "name": "Uppal", "lat": 17.3997, "lng": 78.5582 }
+]

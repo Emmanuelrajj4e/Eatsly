@@ -73,6 +73,7 @@ export interface PostListingInput {
   servings: number;
   preparedAt: string;
   donorName: string;
+  /** One of data/areas.json names; coordinates resolve from it. */
   area: string;
 }
 

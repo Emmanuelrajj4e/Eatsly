@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import data from "@/data/impact.json";
 import { useCountUp } from "@/hooks/use-count-up";
-import { getListings } from "@/services/listings";
+import { getBoard } from "@/services/listings";
 import { KG_PER_SERVING } from "@/config/brand";
 import { ArrowRightIcon } from "@/components/icons";
 
@@ -20,7 +20,7 @@ const counters: Counter[] = [
   {
     label: "servings waiting now",
     target: () =>
-      getListings().reduce((sum, l) => sum + (l.status === "open" ? l.servings : 0), 0),
+      getBoard().reduce((sum, l) => sum + (l.status === "open" ? l.servings : 0), 0),
   },
   {
     label: "kg saved from the bin",

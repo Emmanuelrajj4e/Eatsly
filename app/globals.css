@@ -15,6 +15,7 @@
   --nonveg-flat: #a1441f; /* marker fills, constant both themes */
   --amber: #9a5b00; /* warning */
   --chilli: #c03a22; /* critical */
+  --water: #7fa8c9; /* stylised map water */
   --shadow-selected: 0 12px 32px rgb(19 32 27 / 0.16);
   --radius-card: 6px;
   --radius-btn: 8px;
@@ -31,6 +32,7 @@
   --leaf: #58be7f; /* lifted for 4.5:1 text on dark */
   --amber: #e8a93e;
   --chilli: #e4694f;
+  --water: #4a7ba6;
   --shadow-selected: 0 12px 32px rgb(0 0 0 / 0.55);
 }
 
