@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useBoard } from "@/hooks/use-board";
 import { useTicker } from "@/hooks/use-ticker";
 import { MapPanel } from "@/components/board/map-panel";
 import { ListingCard } from "@/components/board/listing-card";
 import { ClaimDialog } from "@/components/board/claim-dialog";
+import { TrackDrawer } from "@/components/board/track-drawer";
 import { Chip, Tag } from "@/components/ui/chip";
 import { Card } from "@/components/ui/card";
 import { buttonStyles } from "@/components/ui/button";
@@ -34,10 +34,10 @@ function under1Hour(nowMs: number) {
 export function BoardView() {
   const board = useBoard();
   const nowMs = useTicker() * 1000;
-  const router = useRouter();
   const [filter, setFilter] = useState<BoardFilter>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [claimingId, setClaimingId] = useState<string | null>(null);
+  const [trackId, setTrackId] = useState<string | null>(null);
 
   const rows = useMemo(() => {
     if (!board) return { lived: [] as Listing[], open: [] as Listing[], expired: [] as Listing[] };
@@ -131,7 +131,7 @@ export function BoardView() {
                   selected={selectedId === l.id}
                   onSelect={setSelectedId}
                   onClaimOpen={setClaimingId}
-                  onTrack={(id) => router.push(`/track/${id}`)}
+                  onTrack={setTrackId}
                 />
               </li>
             ))}
@@ -152,6 +152,7 @@ export function BoardView() {
       </aside>
 
       <ClaimDialog listing={claiming} nowMs={nowMs} onClose={() => setClaimingId(null)} />
+      <TrackDrawer trackId={trackId} onClose={() => setTrackId(null)} />
     </div>
   );
 }

@@ -18,3 +18,8 @@ function subscribe(cb: () => void) {
 export function useTicker() {
   return useSyncExternalStore(subscribe, seconds, () => 0);
 }
+
+/** Subscribe to the shared 1 Hz store directly (setState inside callbacks). */
+export function onTick(cb: () => void): () => void {
+  return subscribe(cb);
+}

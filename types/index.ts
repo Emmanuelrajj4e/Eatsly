@@ -82,3 +82,43 @@ export interface PostListingInput {
 export type PostResult =
   | { ok: true; listing: Listing }
   | { ok: false; error: string };
+
+/* --- live tracking --- */
+
+/** Stages on the tracking timeline, in strict order. */
+export type StageKey =
+  | "posted"
+  | "claimed"
+  | "assigned"
+  | "picked_up"
+  | "in_transit"
+  | "delivered";
+
+export interface TrackStage {
+  key: StageKey;
+  label: string;
+  /** Simulation timestamp (ISO) or null when the stage has not happened. */
+  at: string | null;
+  /** Plain sentence shown once the stage is current or past. */
+  sentence: string;
+}
+
+export interface TrackVolunteer {
+  name: string;
+  vehicle: string;
+  /** Masked phone, e.g. "+91 ····· 8342". */
+  phone: string;
+}
+
+export interface TrackState {
+  id: string;
+  listing: Listing | null;
+  ngo: NGO | null;
+  stages: TrackStage[];
+  /** 0..1 along the NGO route once in transit. */
+  progress: number;
+  distanceKmLeft: number;
+  etaMinutesLeft: number;
+  volunteer: TrackVolunteer | null;
+  done: boolean;
+}
