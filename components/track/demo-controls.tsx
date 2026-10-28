@@ -21,8 +21,8 @@ export function DemoControls({ id }: { id: string }) {
   );
 
   return (
-    <details className="mt-3 border border-line">
-      <summary className="cursor-pointer select-none px-3 py-2 font-mono text-[11px] uppercase tracking-widest text-muted hover:text-foreground">
+    <details className="mt-3 rounded-card border border-line">
+      <summary className="cursor-pointer select-none rounded-card px-3 py-2 font-mono text-[11px] uppercase tracking-widest text-muted hover:text-foreground">
         Demo controls
       </summary>
       <div className="flex flex-wrap items-center gap-2 border-t border-line px-3 py-3">
@@ -37,10 +37,10 @@ export function DemoControls({ id }: { id: string }) {
                 setSpeedState(s);
               }}
               className={cn(
-                "h-9 w-11 cursor-pointer border border-line font-mono text-xs",
+                "h-9 w-11 cursor-pointer border font-mono text-xs first:rounded-l-md last:rounded-r-md",
                 speed === s
-                  ? "bg-foreground font-semibold text-background"
-                  : "bg-surface text-foreground hover:bg-wash",
+                  ? "border-blue bg-blue font-semibold text-white"
+                  : "border-line bg-surface text-foreground hover:bg-wash",
               )}
             >
               {s}x

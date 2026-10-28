@@ -2,6 +2,7 @@ import { Hero } from "@/components/landing/hero";
 import { BuiltFor } from "@/components/landing/built-for";
 import { WhyCondensed } from "@/components/landing/why-condensed";
 import { WhoItHelps } from "@/components/landing/who-it-helps";
+import { TrackPreview } from "@/components/landing/track-preview";
 
 /**
  * Landing in brief order — announcement bar + header live in the layout:
@@ -16,6 +17,7 @@ export default function HomePage() {
       <BuiltFor />
       <WhyCondensed />
       <WhoItHelps />
+      <TrackPreview />
     </div>
   );
 }

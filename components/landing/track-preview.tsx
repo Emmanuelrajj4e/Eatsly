@@ -1,42 +1,35 @@
-import Link from "next/link";
 import { DEMO_TRACKING_ID } from "@/config/brand";
 import { TrackPanel } from "@/components/track/track-panel";
-import { buttonStyles } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { TrackIdField } from "@/components/landing/track-id-field";
+import { LogoMark } from "@/components/logo";
 
 /**
- * h. Live tracking preview: an embedded demo of the tracking view plus a
- * jump to the full page for the featured run.
+ * h. Live tracking demo: embedded interactive tracker on the featured run,
+ * plus a field to enter any tracking ID before opening the full page.
  */
 export function TrackPreview() {
   return (
-    <section aria-label="Live tracking preview" className="bg-foreground text-background">
+    <section
+      aria-label="Live tracking demo"
+      className="border-y border-line bg-blue-tint/60"
+    >
       <div className="mx-auto max-w-6xl px-4 py-16">
-        <div className="border-b border-background/20 pb-4">
-          <p className="font-mono text-xs uppercase tracking-widest text-background/70">
-            Signature feature
-          </p>
-          <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight">
-            Follow a plate ride, live
-          </h2>
-          <p className="mt-2 max-w-2xl text-background/70">
-            Every claimed run gets a tracking page with stages, a moving volunteer
-            marker, an ETA countdown and proof of delivery at the end. This is the
-            demo run — speed it up or reset it below.
-          </p>
+        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-blue">
+          <LogoMark className="h-5 w-5" />
+          Signature feature
         </div>
+        <h2 className="mt-2 max-w-2xl font-display text-3xl font-bold tracking-tight">
+          Follow a plate ride, live
+        </h2>
+        <p className="mt-2 max-w-2xl text-muted">
+          Every claimed run gets a tracking page: stages, a moving volunteer marker,
+          an ETA countdown and proof of delivery at the end. Here is the sample run —
+          speed it up or reset it, or enter any tracking ID below.
+        </p>
 
-        <div className="mt-8 border border-background/20 bg-background p-5 text-foreground">
+        <div className="mt-8 rounded-card border border-line bg-surface p-5 shadow-[var(--shadow-float)]">
           <TrackPanel id={DEMO_TRACKING_ID} />
-          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4">
-            <Link href={`/track/${DEMO_TRACKING_ID}`} className={buttonStyles("primary", "lg")}>
-              Track delivery {DEMO_TRACKING_ID}
-              <ArrowRight className="h-5 w-5" strokeWidth={1.5} />
-            </Link>
-            <span className="font-mono text-[11px] uppercase tracking-widest text-muted">
-              Opens the full tracking page
-            </span>
-          </div>
+          <TrackIdField />
         </div>
       </div>
     </section>

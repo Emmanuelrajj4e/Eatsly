@@ -6,9 +6,10 @@ import "leaflet/dist/leaflet.css";
 import { routeFor } from "@/services/tracking";
 
 /**
- * Tracking map: dashed base route that turns solid as progress advances,
- * volunteer marker moving along the path, NGO diamond at the end. The same
- * 1 Hz state feed drives it; Leaflet handles keyboard panning.
+ * Tracking map: dashed blue route whose travelled part is green, volunteer
+ * marker (blue, pulsing) moving along the path, green NGO diamond at the
+ * end, orange donor pin at the start. The same 1 Hz state feed drives it;
+ * Leaflet handles keyboard panning.
  */
 export default function TrackMap({ id, progress }: { id: string; progress: number }) {
   const divRef = useRef<HTMLDivElement>(null);
@@ -65,8 +66,8 @@ export default function TrackMap({ id, progress }: { id: string; progress: numbe
 
     if (!solidRef.current) {
       solidRef.current = L.polyline([from, from], {
-        className: "route-line",
-        weight: 2.5,
+        className: "route-done",
+        weight: 3.5,
         dashArray: undefined,
         interactive: false,
         fill: false,
@@ -79,9 +80,9 @@ export default function TrackMap({ id, progress }: { id: string; progress: numbe
         keyboard: false,
         icon: L.divIcon({
           className: "",
-          html: `<span style="display:grid;place-items:center;width:28px;height:28px;position:relative;color:var(--foreground)">
+          html: `<span style="display:grid;place-items:center;width:28px;height:28px;position:relative;color:var(--blue)">
               <span class="pointer-events-none absolute inset-0 rounded-full border-2 border-current animate-pulse-ring"></span>
-              <span style="width:13px;height:13px;border-radius:9999px;background:var(--foreground);border:2px solid var(--background)"></span>
+              <span style="width:13px;height:13px;border-radius:9999px;background:currentColor;border:2px solid #ffffff"></span>
             </span>`,
           iconSize: [28, 28],
           iconAnchor: [14, 14],
@@ -91,9 +92,9 @@ export default function TrackMap({ id, progress }: { id: string; progress: numbe
         keyboard: false,
         icon: L.divIcon({
           className: "",
-          html: `<span style="color:var(--foreground);display:grid;place-items:center;width:24px;height:24px">
+          html: `<span style="color:var(--green);display:grid;place-items:center;width:24px;height:24px">
               <svg width="14" height="14" viewBox="0 0 14 14" style="transform:rotate(45deg)">
-                <rect x="2" y="2" width="10" height="10" fill="var(--background)" stroke="currentColor" stroke-width="2"/>
+                <rect x="2" y="2" width="10" height="10" fill="#FFFFFF" stroke="currentColor" stroke-width="2"/>
               </svg>
             </span>`,
           iconSize: [24, 24],
@@ -104,11 +105,13 @@ export default function TrackMap({ id, progress }: { id: string; progress: numbe
         keyboard: false,
         icon: L.divIcon({
           className: "",
-          html: `<span style="display:grid;place-items:center;width:20px;height:20px;color:var(--muted)">
-              <span style="width:9px;height:9px;border-radius:9999px;border:2px solid currentColor"></span>
+          html: `<span style="display:grid;place-items:center;width:22px;height:22px;position:relative;color:var(--orange)">
+              <span class="relative grid place-items-center rounded-full" style="width:11px;height:11px;background:currentColor;border:2px solid #ffffff">
+                <span style="width:3px;height:3px;border-radius:9999px;background:#ffffff"></span>
+              </span>
             </span>`,
-          iconSize: [20, 20],
-          iconAnchor: [10, 10],
+          iconSize: [22, 22],
+          iconAnchor: [11, 11],
         }),
       }).addTo(map);
     }

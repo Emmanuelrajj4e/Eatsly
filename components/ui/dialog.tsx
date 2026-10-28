@@ -80,7 +80,7 @@ export function Dialog({ open, onClose, title, children, className }: DialogProp
         tabIndex={-1}
         className={cn(
           "absolute left-1/2 top-1/2 w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2",
-          "max-h-[85vh] overflow-auto rounded-card border border-line-strong bg-background p-5 fade-up",
+          "max-h-[85vh] overflow-auto rounded-card border border-foreground bg-surface p-5 fade-up",
           className,
         )}
       >

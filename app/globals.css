@@ -243,6 +243,9 @@ h3 {
 .route-line {
   stroke: var(--blue);
 }
+.route-done {
+  stroke: var(--green);
+}
 .route-label {
   background: var(--green);
   color: #ffffff;
