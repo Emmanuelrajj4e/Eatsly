@@ -1,106 +1,72 @@
 import Link from "next/link";
-import data from "@/data/city.json";
-import { CITY } from "@/config/brand";
 import { buttonStyles } from "@/components/ui/button";
-import {
-  Accordion,
-  type AccordionItem,
-} from "@/components/ui/accordion";
-import { ArrowRight, Plus } from "lucide-react";
+import { Accordion, type AccordionItem } from "@/components/ui/accordion";
+import { ArrowRight, Bike, ChefHat, HeartHandshake, Quote } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type CityRow = { area: string; donors: number; ngos: number };
+/** l. Stories: three short sample quotes, first names only, role-tinted cards. */
+const STORIES = [
+  {
+    who: "Donor · Sakina",
+    what: "\u201CThe wedding ended at 11. By 11:40 an NGO had claimed 120 plates — the clock told us someone was watching.\u201D",
+    note: "Sample story",
+    tone: "orange" as const,
+    icon: ChefHat,
+  },
+  {
+    who: "NGO coordinator · Rukmini",
+    what: "\u201CWe plan routes against the safe window now. No more guessing which hall is worth driving to.\u201D",
+    note: "Sample story",
+    tone: "green" as const,
+    icon: HeartHandshake,
+  },
+  {
+    who: "Volunteer · Imran",
+    what: "\u201CForty servings, one scooter, zero waste. The tracking page meant the kitchen had tea ready when I arrived.\u201D",
+    note: "Sample story",
+    tone: "blue" as const,
+    icon: Bike,
+  },
+];
 
-/** k. City breakdown: sample donor/NGO density per Hyderabad area. */
-export function CityBreakdown() {
-  const rows = data.areas as CityRow[];
-  const donors = rows.reduce((s, r) => s + r.donors, 0);
-  const ngos = rows.reduce((s, r) => s + r.ngos, 0);
-  return (
-    <section aria-label="City breakdown" className="mx-auto max-w-6xl px-4 py-16">
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-4">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">City snapshot</p>
-          <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight">
-            Where {CITY} is posting
-          </h2>
-        </div>
-        <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Sample data</p>
-      </div>
+const STORY_TONES = {
+  orange: "border-t-4 border-orange bg-orange-tint/50",
+  green: "border-t-4 border-green bg-green-tint/50",
+  blue: "border-t-4 border-blue bg-blue-tint/50",
+} as const;
 
-      <div className="mt-6 overflow-x-auto">
-        <table className="mt-0 w-full min-w-[420px] border-collapse text-sm">
-        <caption className="sr-only">
-          {CITY} areas with active donor units and NGO partners (sample data)
-        </caption>
-        <thead>
-          <tr className="border-b border-line text-left font-mono text-[11px] uppercase tracking-widest text-muted">
-            <th scope="col" className="py-2 pr-4">Area</th>
-            <th scope="col" className="py-2 pr-4">Donor units</th>
-            <th scope="col" className="py-2">NGO partners</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.area} className="border-b border-line">
-              <th scope="row" className="py-2.5 pr-4 text-left font-medium">{r.area}</th>
-              <td className="py-2.5 pr-4 font-mono tabular-nums">{r.donors}</td>
-              <td className="py-2.5 font-mono tabular-nums">{r.ngos}</td>
-            </tr>
-          ))}
-          <tr className="font-semibold">
-            <th scope="row" className="py-3 pr-4 text-left">Total</th>
-            <td className="py-3 pr-4 font-mono tabular-nums">{donors}</td>
-            <td className="py-3 font-mono tabular-nums">{ngos}</td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
-      <p className="mt-3 text-xs text-muted">
-        Sample network across {rows.length} {CITY} areas — illustrative numbers for the
-        demo, not a census.
-      </p>
-    </section>
-  );
-}
+const STORY_ICON = {
+  orange: "text-orange",
+  green: "text-green",
+  blue: "text-blue",
+} as const;
 
-/** l. Stories: three short sample quotes, first names only. */
 export function Stories() {
-  const stories = [
-    {
-      who: "Donor · Sakina",
-      what: "“The wedding ended at 11. By 11:40 a NGO had claimed 120 plates — the clock told us someone was watching.”",
-      note: "Sample story",
-    },
-    {
-      who: "NGO coordinator · Rukmini",
-      what: "“We plan routes against the safe window now. No more guessing which hall is worth driving to.”",
-      note: "Sample story",
-    },
-    {
-      who: "Volunteer · Imran",
-      what: "“Forty servings, one scooter, zero waste. The tracking page meant the kitchen had tea ready when I arrived.”",
-      note: "Sample story",
-    },
-  ];
   return (
-    <section aria-label="Voices" className="border-y border-line bg-surface">
-      <div className="mx-auto max-w-6xl px-4 py-14">
-        <h2 className="border-b border-line pb-4 font-display text-3xl font-extrabold tracking-tight">
-          Three voices on the clock
-        </h2>
-        <ul className="mt-6 grid gap-6 md:grid-cols-3">
-          {stories.map((s) => (
-            <li key={s.who}>
+    <section aria-label="Voices" className="mx-auto max-w-6xl px-4 py-16">
+      <h2 className="border-b border-line pb-4 font-display text-3xl font-bold tracking-tight">
+        Three voices on the clock
+      </h2>
+      <ul className="mt-6 grid gap-4 md:grid-cols-3">
+        {STORIES.map((s) => {
+          const Icon = s.icon;
+          return (
+            <li
+              key={s.who}
+              className={cn("flex flex-col rounded-card border border-line bg-surface p-5", STORY_TONES[s.tone])}
+            >
+              <Quote className={cn("h-6 w-6", STORY_ICON[s.tone])} strokeWidth={1.5} aria-hidden="true" />
               <blockquote>
-                <p className="font-quote text-2xl italic leading-snug">{s.what}</p>
-                <footer className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted">
+                <p className="mt-3 font-quote text-2xl italic leading-snug text-ink">{s.what}</p>
+                <footer className="mt-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-muted">
+                  {Icon && <Icon className="h-3.5 w-3.5" strokeWidth={2} aria-hidden="true" />}
                   {s.who} · {s.note}
                 </footer>
               </blockquote>
             </li>
-          ))}
-        </ul>
-      </div>
+          );
+        })}
+      </ul>
     </section>
   );
 }
@@ -130,7 +96,7 @@ export function Faq() {
       id: "expire",
       question: "What happens if food expires?",
       answer:
-        "The listing turns greyed and “Expired” on the board and drops out of claim queues automatically. Nothing expired is ever offered — the clock is the safety rule, not an afterthought.",
+        "The listing turns greyed and \u201CExpired\u201D on the board and drops out of claim queues automatically. Nothing expired is ever offered — the clock is the safety rule, not an afterthought.",
     },
     {
       id: "track",
@@ -141,7 +107,7 @@ export function Faq() {
   ];
   return (
     <section aria-label="Frequently asked questions" className="mx-auto max-w-3xl px-4 py-16">
-      <h2 className="border-b border-line pb-4 font-display text-3xl font-extrabold tracking-tight">
+      <h2 className="border-b border-line pb-4 font-display text-3xl font-bold tracking-tight">
         Questions people actually ask
       </h2>
       <div className="mt-6">
@@ -151,28 +117,36 @@ export function Faq() {
   );
 }
 
-/** n. Final CTA with the second quote. */
+/** n. Final CTA on ink with the second quote + all three role doors. */
 export function FinalCta() {
   return (
-    <section aria-label="Get started" className="bg-foreground text-background">
+    <section aria-label="Get started" className="border-t border-line bg-ink text-[#E8ECFA]">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-[1.2fr_minmax(0,1fr)] md:items-end">
         <div>
           <h2 className="font-quote text-4xl italic leading-tight md:text-6xl">
             “Surplus is only waste if nobody is watching the clock.”
           </h2>
-          <p className="mt-4 max-w-lg text-background/70">
+          <p className="mt-4 max-w-lg text-white/70">
             Post what is left, claim what can still be reached, and let the tracking
             page close the loop.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3 md:justify-end">
-          <Link href="/post" className={buttonStyles("secondary", "lg", "border-background bg-background text-foreground hover:bg-transparent hover:text-background")}>
-            <Plus className="h-5 w-5" strokeWidth={1.5} />
-            Post surplus
+        <div className="flex flex-col gap-3 md:items-end">
+          <Link href="/start?role=donor" className={cn(buttonStyles("primary", "lg", "w-full md:w-auto"))}>
+            <ChefHat className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
+            Donate food
           </Link>
-          <Link href="/board" className={buttonStyles("secondary", "lg", "border-background text-background hover:bg-background hover:text-foreground")}>
-            Claim food
-            <ArrowRight className="h-5 w-5" strokeWidth={1.5} />
+          <Link href="/start?role=ngo" className={cn(buttonStyles("green", "lg", "w-full md:w-auto"))}>
+            I&apos;m an NGO
+          </Link>
+          <Link
+            href="/start?role=volunteer"
+            className={cn(
+              buttonStyles("blue", "lg", "w-full md:w-auto"),
+            )}
+          >
+            Become a volunteer
+            <ArrowRight className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
           </Link>
         </div>
       </div>

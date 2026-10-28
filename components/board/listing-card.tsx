@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tag } from "@/components/ui/chip";
+import { Tag, TAG_TONES } from "@/components/ui/chip";
 import { DietMarker } from "@/components/ui/diet-marker";
 import { CountdownBar } from "@/components/ui/countdown-bar";
 import { Tracker } from "@/components/board/tracker";
@@ -29,7 +29,6 @@ const TYPE_LABEL = {
   packaged: "Packaged",
   produce: "Fresh produce",
 } as const;
-
 export interface ListingCardProps {
   listing: Listing;
   nowMs: number;
@@ -43,14 +42,8 @@ export interface ListingCardProps {
  * One row of the live board. State = colour AND label (never colour alone):
  * Urgent <30 min: red-tint card + striped bar. Soon <90: yellow border.
  * Claimed: blue chip + check. Expired: dashed border, dimmed.
- * Nutrition tag chips are coloured by nutrient group (brief palette rules).
+ * Nutrition tag chips use the shared nutrient-group tones.
  */
-const TAG_TONES: Record<string, string> = {
-  "Carb-rich": "border-yellow bg-yellow-tint text-ink",
-  "Protein-rich": "border-orange bg-orange-tint text-ink",
-  "Fibre": "border-green bg-green-tint text-ink",
-  "Vitamin-rich": "border-blue bg-blue-tint text-ink",
-};
 export function ListingCard({
   listing,
   nowMs,

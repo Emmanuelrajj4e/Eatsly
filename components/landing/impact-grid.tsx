@@ -51,18 +51,23 @@ export function ImpactGrid() {
         <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Sample data</p>
       </div>
 
-      <dl className="grid grid-cols-2 border-b border-l border-line md:grid-cols-5">
+      {/* today's numbers, live from this browser's board (sample data) */}
+      <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {stats === null
           ? Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="border-b border-r border-line p-5" aria-hidden="true">
+              <div key={i} className="rounded-card border border-line bg-surface p-5" aria-hidden="true">
                 <div className="h-9 w-24 animate-pulse bg-wash" />
                 <div className="mt-3 h-3 w-28 animate-pulse bg-wash" />
               </div>
             ))
-          : cells.map((c) => (
-              <div key={c.label} className="border-b border-r border-line p-5">
+          : cells.map((c, i) => (
+              <div
+                key={c.label}
+                className="rounded-card border border-line bg-surface p-5 border-t-4"
+                style={{ borderTopColor: CELL_TONES[i] }}
+              >
                 <Counter target={c.value} suffix={c.suffix} className="text-3xl sm:text-4xl" />
-                <dt className="mt-2 font-mono text-[11px] uppercase tracking-widest">{c.label}</dt>
+                <dt className="mt-2 font-mono text-[11px] uppercase tracking-widest text-muted">{c.label}</dt>
                 <p className="mt-1 text-xs leading-5 text-muted">{c.note}</p>
               </div>
             ))}
@@ -70,3 +75,11 @@ export function ImpactGrid() {
     </section>
   );
 }
+
+const CELL_TONES = [
+  "var(--green)",
+  "var(--blue)",
+  "var(--orange)",
+  "var(--yellow)",
+  "var(--ink)",
+];

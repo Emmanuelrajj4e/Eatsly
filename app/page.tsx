@@ -2,22 +2,33 @@ import { Hero } from "@/components/landing/hero";
 import { BuiltFor } from "@/components/landing/built-for";
 import { WhyCondensed } from "@/components/landing/why-condensed";
 import { WhoItHelps } from "@/components/landing/who-it-helps";
+import { HowItWorks } from "@/components/landing/how-it-works";
 import { TrackPreview } from "@/components/landing/track-preview";
+import { NutritionTeaser } from "@/components/landing/nutrition-teaser";
+import { ImpactGrid } from "@/components/landing/impact-grid";
+import { Stories, Faq, FinalCta } from "@/components/landing/sections-late";
 
 /**
- * Landing in brief order — announcement bar + header live in the layout:
- * c hero · d built for · e why Eatsly (condensed) · f who it helps.
- * No live board, no listing cards anywhere on this page.
- * Sections g–m land in Phase 6.
+ * Landing in the brief order — announcement bar + header live in the layout:
+ * c hero · d built for · e why (condensed) · f who it helps · g how it works
+ * · h live tracking demo · i nutrition teaser · j impact counters · k stories
+ * · l FAQ · m final CTA (+ ink footer).
+ * No live board and no listing cards anywhere on this page.
  */
 export default function HomePage() {
   return (
-    <div className="space-y-16 pb-6 md:space-y-24">
+    <>
       <Hero />
       <BuiltFor />
       <WhyCondensed />
       <WhoItHelps />
+      <HowItWorks />
       <TrackPreview />
-    </div>
+      <NutritionTeaser />
+      <ImpactGrid />
+      <Stories />
+      <Faq />
+      <FinalCta />
+    </>
   );
 }

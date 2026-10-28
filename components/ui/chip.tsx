@@ -43,3 +43,11 @@ export function Tag({ className, children }: { className?: string; children: Rea
     </span>
   );
 }
+
+/** Nutrition tags are coloured by nutrient group (board + post preview). */
+export const TAG_TONES: Record<string, string> = {
+  "Carb-rich": "border-yellow bg-yellow-tint text-ink",
+  "Protein-rich": "border-orange bg-orange-tint text-ink",
+  "Fibre": "border-green bg-green-tint text-ink",
+  "Vitamin-rich": "border-blue bg-blue-tint text-ink",
+};

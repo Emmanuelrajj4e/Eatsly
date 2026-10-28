@@ -4,7 +4,7 @@ import { fmtClock, fmtDistance, fmtCountdown, distanceKm } from "@/lib/utils";
 import { etaMinutes, windowMinutes } from "@/services/geo";
 import { getNgos } from "@/services/ngos";
 import { MIN_POST_MINUTES, SAFE_WINDOWS, KG_PER_SERVING } from "@/config/brand";
-import { Tag } from "@/components/ui/chip";
+import { TAG_TONES, Tag } from "@/components/ui/chip";
 import { Card } from "@/components/ui/card";
 import { TriangleAlert } from "lucide-react";
 import rawAreas from "@/data/areas.json";
@@ -89,16 +89,16 @@ export function PreviewPanel({ data, nowMs }: { data: FormData | null; nowMs: nu
   if (blocked) {
     return (
       <aside aria-label="Post preview" className="space-y-4">
-        <Card className="border-line-strong border-2">
-          <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest">
-            <TriangleAlert className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" /> Cannot post — too late
+        <Card className="border-red border-2 bg-red-tint">
+          <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-red">
+            <TriangleAlert className="h-4 w-4" strokeWidth={2} aria-hidden="true" /> Cannot post — too late
           </p>
-          <p className="mt-2 text-sm text-foreground">
+          <p className="mt-2 text-sm text-ink">
             This batch has under <strong>{MIN_POST_MINUTES} minutes</strong> of safe
             window left, so NGOs cannot reach it in time. Serve it fresh, or post the
             next batch with an earlier prepare time.
           </p>
-          <p className="mt-2 font-mono text-2xl tabular-nums">
+          <p className="mt-2 font-mono text-2xl tabular-nums text-red">
             {fmtCountdown(Math.max(0, built.leftMs))}
           </p>
         </Card>
@@ -117,7 +117,6 @@ export function PreviewPanel({ data, nowMs }: { data: FormData | null; nowMs: nu
           <Row label="Diet" value={data!.veg ? "Veg" : "Non-veg"} />
           <Row label="Est. weight" value={`≈ ${built.weightKg.toFixed(1)} kg`} />
         </div>
-
         {/* nutrition profile, exactly as the board will render it */}
         {data!.tags && data!.tags.length > 0 && (
           <p className="mt-3 flex flex-wrap items-center gap-1.5">
@@ -125,7 +124,9 @@ export function PreviewPanel({ data, nowMs }: { data: FormData | null; nowMs: nu
               Nutrition:
             </span>
             {data!.tags.map((t) => (
-              <Tag key={t}>{t}</Tag>
+              <Tag key={t} className={TAG_TONES[t] ?? undefined}>
+                {t}
+              </Tag>
             ))}
           </p>
         )}
@@ -133,9 +134,15 @@ export function PreviewPanel({ data, nowMs }: { data: FormData | null; nowMs: nu
         <p className="mt-3 font-mono text-3xl font-semibold tabular-nums">
           {fmtCountdown(Math.max(0, built.leftMs))}
         </p>
-        <div className="mt-1.5 h-2 border border-line" aria-hidden="true">
+        <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-wash" aria-hidden="true">
           <div
-            className="h-full bg-foreground"
+            className={
+              built.leftMs < 30 * 60000
+                ? "bar-striped h-full"
+                : built.leftMs < 90 * 60000
+                  ? "h-full rounded-full bg-yellow"
+                  : "h-full rounded-full bg-green"
+            }
             style={{
               width: `${Math.min(100, Math.max(0, (built.leftMs / built.totalMs) * 100))}%`,
               transition: "width 1s linear",
@@ -144,9 +151,9 @@ export function PreviewPanel({ data, nowMs }: { data: FormData | null; nowMs: nu
         </div>
 
         {built.nearest && (
-          <p className="mt-3 rounded-card bg-background p-2.5 text-sm text-muted">
+          <p className="mt-3 rounded-card bg-blue-tint/60 p-2.5 text-sm text-muted">
             Nearest NGO{" "}
-            <span className="font-medium text-foreground">{built.nearest.name}</span>
+            <span className="font-medium text-ink">{built.nearest.name}</span>
             <span className="block font-mono text-xs">
               {fmtDistance(built.nearest.km)} · ETA {built.nearest.eta} min
             </span>

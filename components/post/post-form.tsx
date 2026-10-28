@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { buildFormData, PreviewPanel } from "@/components/post/preview";
 import { Button } from "@/components/ui/button";
 import { DietMarker } from "@/components/ui/diet-marker";
+import { Card } from "@/components/ui/card";
+import { buttonStyles } from "@/components/ui/button";
+import { CheckCircle2, Route, ListChecks } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
+import { TAG_TONES } from "@/components/ui/chip";
 import { useTicker } from "@/hooks/use-ticker";
 import { postListing } from "@/services/listings";
 import { MIN_POST_MINUTES, SAFE_WINDOWS, NUTRITION_TAGS, TAG_ANCHORS } from "@/config/brand";
@@ -14,6 +17,14 @@ import rawAreas from "@/data/areas.json";
 import type { FoodType } from "@/types";
 
 const AREAS = rawAreas as Array<{ name: string }>;
+
+/** Safe-window type chips get their own tone (red/yellow/blue/green). */
+const TYPE_TONES: Record<FoodType, string> = {
+  hot: "bg-red text-white",
+  sweets: "bg-yellow text-ink",
+  packaged: "bg-blue text-white",
+  produce: "bg-green text-white",
+};
 
 const schema = z.object({
   title: z.string().trim().min(3, "Give the dish a name (3+ characters).").max(80, "Keep the name under 80 characters."),
@@ -33,7 +44,6 @@ const schema = z.object({
 export function PostForm() {
   const nowMs = useTicker() * 1000;
   const toast = useToast();
-  const router = useRouter();
 
   const [title, setTitle] = useState("Rajma-chawal dinner trays");
   const [donorName, setDonorName] = useState("Tech Park Canteen");
@@ -44,6 +54,7 @@ export function PostForm() {
   const [preparedTime, setPreparedTime] = useState("");
   const [tags, setTags] = useState<string[]>(["Carb-rich", "Protein-rich"]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [posted, setPosted] = useState<{ id: string; title: string } | null>(null);
 
   // Prefill "10 minutes ago" as the last-cooked time (client-only clock).
   useEffect(() => {
@@ -101,7 +112,7 @@ export function PostForm() {
     });
     if (res.ok) {
       toast("Posted — NGOs can see it on the live board now.", "success");
-      router.push("/board");
+      setPosted({ id: res.listing.id, title: data.title.trim() });
     } else {
       toast(res.error, "error");
     }
@@ -109,6 +120,38 @@ export function PostForm() {
 
   return (
     <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+      {posted && (
+        <Card className="border-green bg-green-tint lg:col-span-2">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="flex items-center gap-2 font-display text-lg font-bold text-green">
+                <CheckCircle2 className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />
+                Posted to the board
+              </p>
+              <p className="mt-1 text-sm text-ink">
+                <strong>{posted.title}</strong> is live. The tracking ID for this donation:
+              </p>
+              <p className="mt-1 font-mono text-sm font-semibold text-ink">{posted.id}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href={`/track/${posted.id}`}
+                className={buttonStyles("blue", "md", "inline-flex")}
+              >
+                <Route className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                Track this donation
+              </a>
+              <a
+                href="/board"
+                className={buttonStyles("secondary", "md", "inline-flex")}
+              >
+                <ListChecks className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                Open the board
+              </a>
+            </div>
+          </div>
+        </Card>
+      )}
       <form noValidate onSubmit={submit} aria-label="Post surplus food">
         <div className="space-y-4">
           <Field label="Dish" idBase="f-title" error={errors.title}>
@@ -170,8 +213,8 @@ export function PostForm() {
                     />
                     <span
                       className={
-                        "inline-flex h-11 items-center rounded-full border px-4 font-mono text-[13px] uppercase tracking-wide " +
-                        (sel ? "border-transparent bg-foreground text-background" : "border-line bg-background")
+                        "inline-flex h-11 items-center rounded-full border px-4 font-mono text-[13px] uppercase tracking-wide transition-colors " +
+                        (sel ? TYPE_TONES[key as FoodType] : "border-line bg-surface hover:bg-wash")
                       }
                     >
                       {w.label} · {w.minutes / 60}h
@@ -227,8 +270,12 @@ export function PostForm() {
                     />
                     <span
                       className={
-                        "inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm " +
-                        (sel ? "border-transparent bg-foreground text-background" : "border-line bg-background")
+                        "inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm transition-colors " +
+                        (sel
+                          ? o.value
+                            ? "border-green bg-green-tint"
+                            : "border-red bg-red-tint"
+                          : "border-line bg-surface hover:bg-wash")
                       }
                     >
                       <DietMarker veg={o.value} withLabel={false} />
@@ -251,8 +298,8 @@ export function PostForm() {
                   <label
                     key={t}
                     className={
-                      "inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 font-mono text-[13px] uppercase tracking-wide " +
-                      (on ? "border-transparent bg-foreground text-background" : "border-line bg-background text-foreground")
+                      "inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 font-mono text-[13px] uppercase tracking-wide transition-colors " +
+                      (on ? TAG_TONES[t] : "border-line bg-surface text-foreground hover:bg-wash")
                     }
                   >
                     <input
@@ -278,9 +325,13 @@ export function PostForm() {
           </fieldset>
 
           {blocked && (
-            <p role="alert" className="rounded-card border-line-strong border-2 px-3 py-2 text-sm text-foreground">
-              Too late for the board: under {MIN_POST_MINUTES} minutes of safe window left.
-              Serve this fresh — posting is blocked so NGOs never chase food that spoils first.
+            <p
+              role="alert"
+              className="rounded-card border-2 border-red bg-red-tint px-3 py-2 text-sm text-ink"
+            >
+              <strong className="text-red">Too late for the board:</strong> under{" "}
+              {MIN_POST_MINUTES} minutes of safe window left. Serve this fresh — posting
+              is blocked so NGOs never chase food that spoils first.
             </p>
           )}
           {futureTime && !blocked && (
@@ -319,7 +370,7 @@ function Field({
       </span>
       {children}
       {error && (
-        <span id={`${idBase}-e`} role="alert" className="mt-1 block text-xs font-medium">
+        <span id={`${idBase}-e`} role="alert" className="mt-1 block text-xs font-medium text-red">
           {error}
         </span>
       )}

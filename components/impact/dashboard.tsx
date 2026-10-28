@@ -10,11 +10,27 @@ import { cn } from "@/lib/utils";
 import type { ImpactStats } from "@/types";
 
 /** One animated stat card (final value kept for screen readers). */
-function Stat({ label, target, note }: { label: string; target: number; note?: string }) {
+function Stat({
+  label,
+  target,
+  note,
+  tone,
+}: {
+  label: string;
+  target: number;
+  note?: string;
+  tone: "orange" | "green" | "blue" | "yellow";
+}) {
   const v = useCountUp(target);
+  const tones = {
+    orange: "border-t-4 border-orange text-orange",
+    green: "border-t-4 border-green text-green",
+    blue: "border-t-4 border-blue text-blue",
+    yellow: "border-t-4 border-yellow text-ink",
+  } as const;
   return (
-    <Card>
-      <p className="font-mono text-4xl font-semibold tabular-nums sm:text-5xl">
+    <Card className="border-t-4">
+      <p className={cn("font-mono text-4xl font-semibold tabular-nums sm:text-5xl", tones[tone])}>
         <span aria-hidden="true">{Math.round(v).toLocaleString("en-IN")}</span>
         <span className="sr-only">{target.toLocaleString("en-IN")}</span>
       </p>
@@ -24,7 +40,7 @@ function Stat({ label, target, note }: { label: string; target: number; note?: s
   );
 }
 
-/** Pure-SVG 7-day chart in black/white/gray patterns: solid days, hatched today. */
+/** Pure-SVG 7-day chart in brand colours: green solid days, orange hatched today. */
 function WeekChart({
   stats,
   labels,
@@ -42,8 +58,8 @@ function WeekChart({
       <svg viewBox="0 0 480 170" className="mt-4 h-auto w-full" role="img" aria-label={`Bar chart of meals per day. ${labels[6]}: ${stats.last7Days[6]} meals, highest of the week`}>
         <defs>
           <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-            <rect width="6" height="6" fill="var(--background)" />
-            <line x1="0" y1="0" x2="0" y2="6" stroke="var(--foreground)" strokeWidth="2" />
+            <rect width="6" height="6" fill="var(--orange-tint)" />
+            <line x1="0" y1="0" x2="0" y2="6" stroke="var(--orange)" strokeWidth="2" />
           </pattern>
         </defs>
         {stats.last7Days.map((meals, i) => {
@@ -60,8 +76,9 @@ function WeekChart({
                 y={y}
                 width={w}
                 height={h}
-                fill={today ? "url(#hatch)" : "var(--foreground)"}
-                stroke="var(--foreground)"
+                rx="6"
+                fill={today ? "url(#hatch)" : "var(--green)"}
+                stroke={today ? "var(--orange)" : "var(--green)"}
                 strokeWidth={today ? 1.5 : 0}
               />
               <text x={x + w / 2} y={y - 6} textAnchor="middle" fontSize="12" fontFamily="var(--font-mono)" fill="var(--foreground)">
@@ -75,7 +92,10 @@ function WeekChart({
         })}
       </svg>
       <p className="mt-1 font-mono text-[11px] text-muted">
-        Hatched bar = today. Solid bars = the six days before it.
+        <span className="inline-block h-2.5 w-2.5 translate-y-0.5 rounded-sm bg-green" aria-hidden="true" /> solid
+        bars = the six previous days ·{" "}
+        <span className="inline-block h-2.5 w-2.5 translate-y-0.5 rounded-sm border border-orange bg-orange-tint" aria-hidden="true" />{" "}
+        hatched = today.
       </p>
     </Card>
   );
@@ -121,9 +141,9 @@ export function ImpactDashboard() {
   return (
     <div className={cn("space-y-4")}>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat label="meals rescued today" target={data.stats.mealsRescuedToday} />
-        <Stat label="servings waiting now" target={data.stats.servingsWaitingNow} note="open on the board" />
-        <Stat label="kg saved from the bin" target={data.stats.kgSaved} note={`≈ ${KG_PER_SERVING} kg per meal served`} />
+        <Stat tone="green" label="meals rescued today" target={data.stats.mealsRescuedToday} />
+        <Stat tone="blue" label="servings waiting now" target={data.stats.servingsWaitingNow} note="open on the board" />
+        <Stat tone="orange" label="kg saved from the bin" target={data.stats.kgSaved} note={`≈ ${KG_PER_SERVING} kg per meal served`} />
       </div>
       <WeekChart stats={data.stats} labels={data.labels} />
       <Card className="text-sm text-muted">

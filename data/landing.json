@@ -72,6 +72,39 @@
       ]
     }
   ],
+  "withoutWith": {
+    "without": [
+      "Phone calls and WhatsApp forwards, hope someone answers",
+      "Nobody is sure the food is still safe to serve",
+      "Donors never hear where their food went",
+      "NGOs burn volunteer trips on listings already claimed or cold",
+      "Good food spoils while people decide who will take it"
+    ],
+    "with": [
+      "Post in about two minutes from the kitchen phone",
+      "A safe-window clock is on every listing, visible to everyone",
+      "An NGO is matched by pickup ETA, not by luck",
+      "Everyone follows the same live tracking page",
+      "Delivery is signed off with a proof card and the impact counts"
+    ]
+  },
+  "feels": [
+    { "who": "The donor", "sentence": "A wedding hall sees exactly where its 120 spare plates went — with a receipt, not a rumour." },
+    { "who": "The NGO", "sentence": "The coordinator claims with confidence because the math between ETA and the clock is done for them." },
+    { "who": "The volunteer", "sentence": "The rider gets one clear run with an address, a timer and stages — not five group chats." },
+    { "who": "The community", "sentence": "The plate arrives in time, balanced on the plate builder — and nothing went to the bin for it." }
+  ],
+  "principles": [
+    { "title": "Safety first", "text": "If the clock says no, the answer is no. Expired food never changes hands.", "tone": "red" },
+    { "title": "Speed", "text": "Two minutes to post, one tap to claim, a countdown that everyone shares.", "tone": "yellow" },
+    { "title": "Transparency", "text": "Live tracking and proof of delivery — every plate has a visible journey.", "tone": "blue" },
+    { "title": "Nutrition", "text": "Food that arrives on time should still feed: every listing carries nutrient tags.", "tone": "green" }
+  ],
+  "roadmap": [
+    "Real-time push alerts: NGOs get a buzz the second a batch inside their ETA goes live.",
+    "Verified NGO onboarding: registration checks before any claim button lights up.",
+    "Donor impact reports: a monthly receipt of meals, kg saved, and where every plate went."
+  ],
   "serves": {
     "donorTypes": [
       "Restaurants",
