@@ -1,0 +1,65 @@
+[
+  {
+    "id": "ngo-001",
+    "name": "Anna Seva Trust",
+    "area": "Secunderabad",
+    "lat": 17.4399,
+    "lng": 78.4983,
+    "contact": "[+91 contact placeholder]",
+    "vehicle": "Van pickup"
+  },
+  {
+    "id": "ngo-002",
+    "name": "Hope Kitchen",
+    "area": "Ameerpet",
+    "lat": 17.4374,
+    "lng": 78.4487,
+    "contact": "[+91 contact placeholder]",
+    "vehicle": "Bicycle pickup"
+  },
+  {
+    "id": "ngo-003",
+    "name": "Hunger Free Org",
+    "area": "Madhapur",
+    "lat": 17.4483,
+    "lng": 78.3915,
+    "contact": "[+91 contact placeholder]",
+    "vehicle": "Auto pickup"
+  },
+  {
+    "id": "ngo-004",
+    "name": "Nizam Seva Society",
+    "area": "Charminar",
+    "lat": 17.3616,
+    "lng": 78.4747,
+    "contact": "[+91 contact placeholder]",
+    "vehicle": "Auto pickup"
+  },
+  {
+    "id": "ngo-005",
+    "name": "Green Sannidhi",
+    "area": "Banjara Hills",
+    "lat": 17.4126,
+    "lng": 78.4361,
+    "contact": "[+91 contact placeholder]",
+    "vehicle": "Bicycle pickup"
+  },
+  {
+    "id": "ngo-006",
+    "name": "Warmth Foundation",
+    "area": "Kukatpally",
+    "lat": 17.4849,
+    "lng": 78.4138,
+    "contact": "[+91 contact placeholder]",
+    "vehicle": "Van pickup"
+  },
+  {
+    "id": "ngo-007",
+    "name": "Sahaya Collective",
+    "area": "LB Nagar",
+    "lat": 17.3457,
+    "lng": 78.5522,
+    "contact": "[+91 contact placeholder]",
+    "vehicle": "Bicycle pickup"
+  }
+]

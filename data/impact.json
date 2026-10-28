@@ -1,0 +1,13 @@
+{
+  "mealsTodayBase": 842,
+  "kgSavedBase": 320,
+  "days": [
+    { "label": "Mon", "meals": 612 },
+    { "label": "Tue", "meals": 748 },
+    { "label": "Wed", "meals": 596 },
+    { "label": "Thu", "meals": 902 },
+    { "label": "Fri", "meals": 731 },
+    { "label": "Sat", "meals": 1043 },
+    { "label": "Sun", "meals": 842 }
+  ]
+}

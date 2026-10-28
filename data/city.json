@@ -1,0 +1,13 @@
+[
+  { "area": "Kukatpally", "donors": 9, "ngos": 2 },
+  { "area": "Secunderabad", "donors": 12, "ngos": 3 },
+  { "area": "Begumpet", "donors": 7, "ngos": 2 },
+  { "area": "Ameerpet", "donors": 8, "ngos": 2 },
+  { "area": "Madhapur", "donors": 14, "ngos": 4 },
+  { "area": "Jubilee Hills", "donors": 10, "ngos": 2 },
+  { "area": "Banjara Hills", "donors": 11, "ngos": 3 },
+  { "area": "Gachibowli", "donors": 13, "ngos": 4 },
+  { "area": "Charminar", "donors": 9, "ngos": 3 },
+  { "area": "LB Nagar", "donors": 6, "ngos": 2 },
+  { "area": "Uppal", "donors": 7, "ngos": 2 }
+]
