@@ -7,14 +7,6 @@ import type { Listing, NGO } from "@/types";
 
 const AREAS = areasJson as Array<{ name: string; lat: number; lng: number }>;
 
-function urgencyColor(listing: Listing, nowMs: number) {
-  if (listing.status !== "open") return "var(--muted)";
-  const mins = (safeUntilMs(listing.preparedAt, listing.type) - nowMs) / 60000;
-  if (mins < 30) return "var(--chilli)";
-  if (mins < 90) return "var(--amber)";
-  return "var(--leaf)";
-}
-
 function minutesLeft(listing: Listing, nowMs: number) {
   return Math.max(0, Math.round((safeUntilMs(listing.preparedAt, listing.type) - nowMs) / 60000));
 }
@@ -28,32 +20,30 @@ export interface MapProps {
 }
 
 /**
- * Stylised Hyderabad map: real area positions on an abstracted geography
- * (dashed Outer Ring Road, Hussain Sagar, the Musi). Keyboard-operable pins.
+ * Stylised Hyderabad SVG map — the offline fallback for the Leaflet map.
+ * Real area positions, abstracted geography. Form encodes state (no hue):
+ * solid pin = open, pulse ring = urgent, thick hollow ring = claimed,
+ * dashed = expired. Keyboard-operable pins.
  */
 export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps) {
   const selectedListing = listings.find((l) => l.id === selectedId) ?? null;
 
-  // Route: selected listing -> its claimed NGO, else nearest NGO.
   let route: { from: { x: number; y: number }; to: { x: number; y: number }; label: string } | null =
     null;
   if (selectedListing) {
     const claimed = ngos.find((n) => n.id === selectedListing.ngoId);
     const near = claimed
       ? { ngo: claimed, d: distanceKm(selectedListing, claimed) }
-      : ngos
+      : [...ngos]
           .map((n) => ({ ngo: n, d: distanceKm(selectedListing, n) }))
           .sort((a, b) => a.d - b.d)[0];
-    if (near && selectedListing.status !== "open") {
-      const ngoS = near.ngo;
-      const a = project(selectedListing.lat, selectedListing.lng);
-      const b = project(ngoS.lat, ngoS.lng);
-      route = { from: a, to: b, label: fmtDistance(near.d) };
-    } else if (near) {
-      const ngoS = near.ngo;
-      const a = project(selectedListing.lat, selectedListing.lng);
-      const b = project(ngoS.lat, ngoS.lng);
-      route = { from: a, to: b, label: fmtDistance(near.d) };
+    if (near) {
+      const ngo = near.ngo;
+      route = {
+        from: project(selectedListing.lat, selectedListing.lng),
+        to: project(ngo.lat, ngo.lng),
+        label: fmtDistance(near.d),
+      };
     }
   }
 
@@ -80,29 +70,24 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
           strokeWidth="3"
           strokeDasharray="7 9"
           strokeLinejoin="round"
-          opacity="0.9"
         />
 
-        {/* Water: Hussain Sagar + Musi river */}
-        <ellipse cx="349" cy="248" rx="30" ry="23" fill="var(--water)" opacity="0.85" />
-        <text x="349" y="249" textAnchor="middle" fontSize="9" fontFamily="var(--font-mono)" fill="var(--surface)">
-          HS L
-        </text>
-        <text x="349" y="284" textAnchor="middle" fontSize="10" fontFamily="var(--font-mono)" fill="var(--muted)">
+        {/* water: Hussain Sagar + Musi river */}
+        <ellipse cx="349" cy="248" rx="30" ry="23" fill="var(--wash)" stroke="var(--line)" />
+        <text x="349" y="282" textAnchor="middle" fontSize="10" fontFamily="var(--font-mono)" fill="var(--muted)">
           Hussain Sagar
         </text>
         <path
           d="M 20 392 C 120 396 220 394 320 394 C 400 394 470 410 566 419"
           fill="none"
-          stroke="var(--water)"
+          stroke="var(--line)"
           strokeWidth="3.5"
-          opacity="0.85"
         />
         <text x="150" y="382" fontSize="10" fontFamily="var(--font-mono)" fill="var(--muted)">
           Musi river
         </text>
 
-        {/* Area nodes */}
+        {/* area nodes */}
         {AREAS.map((a) => {
           const p = project(a.lat, a.lng);
           return (
@@ -122,7 +107,7 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
           );
         })}
 
-        {/* route + label under pins */}
+        {/* route + distance label */}
         {route && (
           <>
             <line
@@ -130,21 +115,13 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
               y1={route.from.y}
               x2={route.to.x}
               y2={route.to.y}
-              stroke="var(--marigold)"
+              stroke="var(--foreground)"
               strokeWidth="2.5"
               strokeDasharray="6 6"
             />
-            <g
-              transform={`translate(${(route.from.x + route.to.x) / 2} ${(route.from.y + route.to.y) / 2})`}
-            >
-              <rect x="-34" y="-11" width="68" height="20" rx="10" fill="var(--marigold)" />
-              <text
-                textAnchor="middle"
-                y="4"
-                fontSize="11"
-                fontFamily="var(--font-mono)"
-                fill="var(--marigold-ink)"
-              >
+            <g transform={`translate(${(route.from.x + route.to.x) / 2} ${(route.from.y + route.to.y) / 2})`}>
+              <rect x="-34" y="-11" width="68" height="20" fill="var(--foreground)" />
+              <text textAnchor="middle" y="4" fontSize="11" fontFamily="var(--font-mono)" fill="var(--background)">
                 {route.label}
               </text>
             </g>
@@ -172,29 +149,30 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
               }}
               className="cursor-pointer"
             >
-              <title>{`${n.name} · ${n.area}`}</title>
               {selected && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="var(--foreground)" strokeWidth="2" />}
               <path
-                transform={`translate(${p.x} ${p.y - 14}) rotate(45)`}
+                transform={`translate(${p.x} ${p.y}) rotate(45)`}
                 d="M -6 0 L 0 -6 L 6 0 L 0 6 Z"
-                fill="var(--marigold)"
-                stroke="var(--surface)"
-                strokeWidth="1.6"
+                transform-origin={`${p.x} ${p.y}`}
+                fill="var(--background)"
+                stroke="var(--foreground)"
+                strokeWidth="1.8"
               />
             </g>
           );
         })}
 
-        {/* Listing pins */}
+        {/* listing pins, form-coded */}
         {listings.map((l) => {
           const p = project(l.lat, l.lng);
           const selected = selectedId === l.id;
-          const color = urgencyColor(l, nowMs);
-          const pulse = l.status === "open" && minutesLeft(l, nowMs) < 30;
+          const expired = l.status === "open" && safeUntilMs(l.preparedAt, l.type) < nowMs;
+          const claimed = l.status !== "open";
+          const urgent = !expired && !claimed && minutesLeft(l, nowMs) < 30;
           const label =
             l.status === "open"
               ? `${l.title}, ${l.area}, ${minutesLeft(l, nowMs)} minutes left`
-              : `${l.title}, ${l.status.replace("_", " ")}`;
+              : `${l.title}, ${(l.status ?? "").replace("_", " ")}`;
           return (
             <g
               key={l.id}
@@ -211,21 +189,35 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
                 onKey(e, l.id);
               }}
               className="cursor-pointer"
+              opacity={expired ? 0.55 : 1}
             >
-              <title>{label}</title>
-              {pulse && (
+              {urgent && (
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r="9"
-                  fill={color}
-                  className="animate-pin-pulse"
+                  r="10"
+                  fill="none"
+                  stroke="var(--foreground)"
+                  strokeWidth="2"
+                  className="animate-pulse-ring"
                   style={{ transformBox: "fill-box", transformOrigin: "center" }}
                 />
               )}
               {selected && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="var(--foreground)" strokeWidth="2" />}
-              <circle cx={p.x} cy={p.y} r={selected ? 9.5 : 8.5} fill={color} stroke="var(--surface)" strokeWidth="2" />
-              <circle cx={p.x} cy={p.y} r="2.6" fill="var(--surface)" />
+              {claimed ? (
+                <circle cx={p.x} cy={p.y} r="7.5" fill="none" stroke="var(--foreground)" strokeWidth="3.5" />
+              ) : (
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="7.5"
+                  fill="var(--foreground)"
+                  stroke="var(--foreground)"
+                  strokeWidth={expired ? 0 : 2}
+                  strokeDasharray={expired ? "3 3" : undefined}
+                />
+              )}
+              <circle cx={p.x} cy={p.y} r="2.4" fill="var(--background)" strokeDasharray={expired ? "2 2" : undefined} />
             </g>
           );
         })}
@@ -233,29 +225,37 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
 
       <figcaption className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-muted">
         <span className="inline-flex items-center gap-1.5">
-          <MarkDot /> pin: listing
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-foreground" /> pin: listing
         </span>
         <span className="inline-flex items-center gap-1.5">
           <MarkDiamond /> diamond: NGO
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-chilli animate-pin-pulse" style={{ transformBox: "fill-box" }} />
+          <span
+            className="inline-block h-2.5 w-2.5 rounded-full border-2 border-foreground animate-pulse-ring"
+            style={{ transformBox: "fill-box" }}
+          />
           pulse: under 30 min
         </span>
-        <span>Tap a pin or card to see the route.</span>
+        <span>Click a pin or card to draw its route. Fallback map (tiles offline).</span>
       </figcaption>
     </figure>
   );
 }
 
-function MarkDot() {
-  return <span className="inline-block h-2.5 w-2.5 rounded-full bg-leaf" />;
-}
-
 function MarkDiamond() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-      <rect x="2.3" y="2.3" width="5.4" height="5.4" transform="rotate(45 5 5)" fill="var(--marigold)" />
+      <rect
+        x="2.3"
+        y="2.3"
+        width="5.4"
+        height="5.4"
+        transform="rotate(45 5 5)"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
     </svg>
   );
 }

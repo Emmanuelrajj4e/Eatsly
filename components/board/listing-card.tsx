@@ -1,31 +1,26 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tag } from "@/components/ui/chip";
 import { DietMarker } from "@/components/ui/diet-marker";
-import { CountdownBar } from "@/components/board/countdown-bar";
+import { CountdownBar } from "@/components/ui/countdown-bar";
 import { Tracker } from "@/components/board/tracker";
-import {
-  CarrotIcon,
-  CookieIcon,
-  FlameIcon,
-  PackageIcon,
-} from "@/components/icons";
-import { fmtDistance, distanceKm } from "@/lib/utils";
+import { Cookie, Package, Flame, Carrot, Check, TriangleAlert } from "lucide-react";
+import { cn, fmtDistance, distanceKm } from "@/lib/utils";
 import { etaMinutes } from "@/services/geo";
 import { getNgos } from "@/services/ngos";
 import { safeUntilMs } from "@/services/geo";
-import { KG_PER_SERVING } from "@/config/brand";
-import { cn } from "@/lib/utils";
+import { KG_PER_SERVING, TAG_ANCHORS } from "@/config/brand";
 import type { Listing } from "@/types";
 
 const TYPE_ICON = {
-  hot: FlameIcon,
-  sweets: CookieIcon,
-  packaged: PackageIcon,
-  produce: CarrotIcon,
+  hot: Flame,
+  sweets: Cookie,
+  packaged: Package,
+  produce: Carrot,
 } as const;
 
 const TYPE_LABEL = {
@@ -41,15 +36,22 @@ export interface ListingCardProps {
   selected: boolean;
   onSelect: (id: string | null) => void;
   onClaimOpen: (id: string) => void;
+  onTrack: (id: string) => void;
 }
 
-/** One row of the live board: markers, nearest NGO, countdown, claim/tracker. */
+/**
+ * One row of the live board. State is encoded by form, never by hue:
+ * URGENT (<30 min): inverted black card, URGENT label, striped bar.
+ * SOON (<90): 2px ink border, SOON label. Normal: hairline.
+ * Claimed: ring marker + check label. Expired: dotted border, 50% opacity.
+ */
 export function ListingCard({
   listing,
   nowMs,
   selected,
   onSelect,
   onClaimOpen,
+  onTrack,
 }: ListingCardProps) {
   const Icon = TYPE_ICON[listing.type];
   const near = useMemo(() => pickNearest(listing, getNgos()), [listing]);
@@ -57,25 +59,56 @@ export function ListingCard({
   const expired =
     listing.status === "open" && safeUntilMs(listing.preparedAt, listing.type) < nowMs;
   const claimed = listing.status !== "open";
-  const dim = expired && !claimed;
+  const mins = (safeUntilMs(listing.preparedAt, listing.type) - nowMs) / 60000;
+  const urgent = !expired && !claimed && mins < 30;
+  const soon = !expired && !claimed && !urgent && mins < 90;
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSelect(selected ? null : listing.id);
+    }
+  };
 
   return (
     <Card
+      role="button"
+      tabIndex={0}
+      aria-pressed={selected}
       data-selected={selected || undefined}
-      className={cn(
-        "cursor-pointer transition-colors",
-        selected && "border-foreground/45",
-        dim && "opacity-55",
-      )}
       onClick={() => onSelect(selected ? null : listing.id)}
+      onKeyDown={onKeyDown}
+      className={cn(
+        "cursor-pointer",
+        urgent && "inverted border-transparent bg-foreground text-background",
+        soon && "border-line-strong border-2",
+      )}
     >
+      {(expired || claimed) && (
+        <span
+          className={cn(
+            "absolute right-4 top-4 inline-flex h-7 items-center gap-1.5 border px-2",
+            "font-mono text-[10px] uppercase tracking-widest",
+            expired && "border-dashed border-line text-muted",
+            claimed && "border-line-strong",
+          )}
+        >
+          {claimed ? (
+            <>
+              <Check className="h-3.5 w-3.5" strokeWidth={2} /> Claimed
+            </>
+          ) : (
+            "Expired"
+          )}
+        </span>
+      )}
       <div className="flex items-start justify-between gap-3">
         <h3 className="flex items-center gap-2 font-display text-lg font-semibold leading-snug">
           <DietMarker veg={listing.veg} withLabel={false} />
           <span className="min-w-0">{listing.title}</span>
         </h3>
         <span className="flex shrink-0 items-center gap-1.5 font-mono text-[11px] uppercase tracking-wide text-muted">
-          <Icon className="h-4 w-4" />
+          <Icon className="h-4 w-4" strokeWidth={1.5} />
           {TYPE_LABEL[listing.type]}
         </span>
       </div>
@@ -98,11 +131,45 @@ export function ListingCard({
         </p>
       )}
 
-      {listing.status !== "delivered" && <CountdownBar listing={listing} nowMs={nowMs} className="mt-3" />}
+      {listing.nutritionTags && listing.nutritionTags.length > 0 && !expired && (
+        <p className="mt-2 flex flex-wrap items-center gap-1.5">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+            Nutrition:
+          </span>
+          {listing.nutritionTags.map((t) => (
+            <Link
+              key={t}
+              href={`/nutrition#${TAG_ANCHORS[t] ?? ""}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center border border-line font-mono text-[11px] underline-offset-4 hover:bg-wash hover:underline"
+              style={{ padding: "2px 8px" }}
+            >
+              {t}
+            </Link>
+          ))}
+        </p>
+      )}
+
+      {listing.status !== "delivered" && (
+        <CountdownBar
+          listing={listing}
+          nowMs={nowMs}
+          className="mt-3"
+          compact={claimed || expired}
+        />
+      )}
+
+      {/* state labels live here so form, not hue, carries urgency */}
+      {urgent && (
+        <p className="sr-only">Urgent: the safe window closes within 30 minutes.</p>
+      )}
+      {soon && (
+        <p className="sr-only">Closing soon: the safe window closes within 90 minutes.</p>
+      )}
 
       {listing.status === "open" && !expired && (
         <Button
-          variant="primary"
+          variant={urgent ? "secondary" : "primary"}
           className="mt-4 w-full"
           onClick={(e) => {
             e.stopPropagation();
@@ -112,15 +179,21 @@ export function ListingCard({
           Claim food
         </Button>
       )}
-      {listing.status === "open" && expired && (
-        <Button variant="secondary" disabled className="mt-4 w-full">
+      {claimed && (
+        <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+          <Tracker listing={listing} onTrack={onTrack} />
+        </div>
+      )}
+      {expired && (
+        <Button variant="ghost" disabled className="mt-3 w-full">
           Safe window closed
         </Button>
       )}
-      {claimed && (
-        <div className="mt-4" onClick={(e) => e.stopPropagation()}>
-          <Tracker listing={listing} />
-        </div>
+      {expired && (
+        <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
+          <TriangleAlert className="h-3.5 w-3.5" strokeWidth={1.5} aria-hidden="true" />
+          Expired food never reaches the board — it leaves the clock when the window ends.
+        </p>
       )}
     </Card>
   );

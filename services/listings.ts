@@ -36,11 +36,12 @@ interface RawListing {
   claimedAgo?: number;
   pickedUpAgo?: number;
   deliveredAgo?: number;
+  tags?: string[];
 }
 
 const KEYS = {
-  overrides: "annadaan:overrides:v1",
-  posts: "annadaan:posts:v1",
+  overrides: "eatsly:overrides:v1",
+  posts: "eatsly:posts:v1",
 } as const;
 
 export interface ListingOverride {
@@ -52,7 +53,7 @@ export interface ListingOverride {
 }
 
 /** Cross-tab pipe: refresh this store when another tab mutates it. */
-const sync = connectSync("annadaan", () => emit());
+const sync = connectSync("eatsly", () => emit());
 
 type Listener = (listings: Listing[]) => void;
 
@@ -92,6 +93,7 @@ function getSeed(): Listing[] {
     claimedAt: r.claimedAgo ? isoMinutesAgo(r.claimedAgo) : undefined,
     pickedUpAt: r.pickedUpAgo ? isoMinutesAgo(r.pickedUpAgo) : undefined,
     deliveredAt: r.deliveredAgo ? isoMinutesAgo(r.deliveredAgo) : undefined,
+    nutritionTags: r.tags,
   }));
 }
 

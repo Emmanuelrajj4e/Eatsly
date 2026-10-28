@@ -215,6 +215,30 @@ body {
   color: var(--foreground) !important;
   border-color: var(--line) !important;
 }
+/* markers: keyboard focus ring like everything else */
+.leaflet-marker-icon:focus,
+.leaflet-marker-icon:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+/* dashed route polyline + its distance label */
+.route-line {
+  stroke: var(--foreground);
+}
+.route-label {
+  background: var(--foreground);
+  color: var(--background);
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+}
+.route-label::before {
+  display: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {

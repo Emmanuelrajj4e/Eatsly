@@ -8,7 +8,7 @@ import { connectSync, readJson, writeJson } from "@/services/storage";
  * Onboarded NGOs persist to localStorage and join every claim dialog.
  */
 
-const KEY = "annadaan:ngos:v1";
+const KEY = "eatsly:ngos:v1";
 
 type Listener = (ngos: NGO[]) => void;
 
@@ -19,7 +19,7 @@ function refresh() {
   listeners.forEach((fn) => fn(all));
 }
 
-const broadcast = connectSync("annadaan-ngos", refresh);
+const broadcast = connectSync("eatsly-ngos", refresh);
 
 export function subscribe(fn: Listener): () => void {
   listeners.add(fn);

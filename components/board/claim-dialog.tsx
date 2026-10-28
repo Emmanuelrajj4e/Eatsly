@@ -2,7 +2,7 @@
 
 import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/toast";
-import { CheckIcon } from "@/components/icons";
+import { Check } from "lucide-react";
 import { fmtDistance, distanceKm } from "@/lib/utils";
 import { etaMinutes, safeUntilMs } from "@/services/geo";
 import { claim } from "@/services/listings";
@@ -77,13 +77,13 @@ export function ClaimDialog({
                     className={cn(
                       "flex w-full items-center justify-between gap-3 rounded-card border p-3 text-left transition-colors",
                       ok
-                        ? "cursor-pointer border-line bg-surface hover:border-leaf hover:bg-leaf/[0.06]"
+                        ? "cursor-pointer border-line bg-surface hover:border-line-strong hover:bg-wash"
                         : "cursor-not-allowed border-line/70 bg-background opacity-75",
                     )}
                   >
                     <span>
                       <span className="flex items-center gap-2 font-medium">
-                        {ok && <CheckIcon className="h-4 w-4 text-leaf" />}
+                        {ok && <Check className="h-4 w-4 text-foreground" strokeWidth={2} />}
                         {ngo.name}
                       </span>
                       <span className="mt-0.5 block font-mono text-xs text-muted">{ngo.area}</span>

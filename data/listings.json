@@ -9,7 +9,8 @@
     "donorName": "Alka Function Hall",
     "area": "Kukatpally",
     "lat": 17.4849,
-    "lng": 78.4138
+    "lng": 78.4138,
+    "tags": ["Carb-rich"]
   },
   {
     "id": "l002",
@@ -21,7 +22,8 @@
     "donorName": "Zaffran Terrace",
     "area": "Jubilee Hills",
     "lat": 17.4239,
-    "lng": 78.4098
+    "lng": 78.4098,
+    "tags": ["Protein-rich"]
   },
   {
     "id": "l003",
@@ -33,7 +35,8 @@
     "donorName": "Hotel Nizam Delights",
     "area": "Charminar",
     "lat": 17.3616,
-    "lng": 78.4747
+    "lng": 78.4747,
+    "tags": ["Carb-rich", "Protein-rich"]
   },
   {
     "id": "l004",
@@ -45,7 +48,8 @@
     "donorName": "Ganesh Milk Sweets",
     "area": "Begumpet",
     "lat": 17.4459,
-    "lng": 78.4689
+    "lng": 78.4689,
+    "tags": ["Carb-rich", "Vitamin-rich"]
   },
   {
     "id": "l005",
@@ -57,7 +61,8 @@
     "donorName": "Padma Sweets",
     "area": "Ameerpet",
     "lat": 17.4374,
-    "lng": 78.4487
+    "lng": 78.4487,
+    "tags": ["Carb-rich"]
   },
   {
     "id": "l006",
@@ -69,7 +74,8 @@
     "donorName": "Metro Hostel Mess",
     "area": "Gachibowli",
     "lat": 17.4401,
-    "lng": 78.3489
+    "lng": 78.3489,
+    "tags": ["Protein-rich", "Vitamin-rich"]
   },
   {
     "id": "l007",
@@ -81,7 +87,8 @@
     "donorName": "Chai Corner",
     "area": "Madhapur",
     "lat": 17.4483,
-    "lng": 78.3915
+    "lng": 78.3915,
+    "tags": ["Vitamin-rich"]
   },
   {
     "id": "l008",
@@ -93,7 +100,8 @@
     "donorName": "Kothapet Wholesale Market",
     "area": "Secunderabad",
     "lat": 17.4399,
-    "lng": 78.4983
+    "lng": 78.4983,
+    "tags": ["Fibre", "Vitamin-rich"]
   },
   {
     "id": "l009",
@@ -105,7 +113,8 @@
     "donorName": "LB Nagar Vendor Row",
     "area": "LB Nagar",
     "lat": 17.3457,
-    "lng": 78.5522
+    "lng": 78.5522,
+    "tags": ["Fibre", "Vitamin-rich"]
   },
   {
     "id": "l010",
@@ -117,7 +126,8 @@
     "donorName": "Sri Venkateswara Mess",
     "area": "Uppal",
     "lat": 17.3997,
-    "lng": 78.5582
+    "lng": 78.5582,
+    "tags": ["Carb-rich", "Protein-rich"]
   },
   {
     "id": "l011",
@@ -129,7 +139,8 @@
     "donorName": "Sagar Gruha Bhojanam",
     "area": "Banjara Hills",
     "lat": 17.4126,
-    "lng": 78.4361
+    "lng": 78.4361,
+    "tags": ["Carb-rich"]
   },
   {
     "id": "l012",
@@ -141,7 +152,8 @@
     "donorName": "Silk Route Wok",
     "area": "Madhapur",
     "lat": 17.4483,
-    "lng": 78.3915
+    "lng": 78.3915,
+    "tags": ["Carb-rich", "Protein-rich"]
   },
   {
     "id": "l013",
@@ -153,7 +165,8 @@
     "donorName": "New Crown Bakery",
     "area": "Ameerpet",
     "lat": 17.4374,
-    "lng": 78.4487
+    "lng": 78.4487,
+    "tags": ["Carb-rich"]
   },
   {
     "id": "l014",
@@ -165,7 +178,8 @@
     "donorName": "Tech Park Canteen",
     "area": "Gachibowli",
     "lat": 17.4401,
-    "lng": 78.3489
+    "lng": 78.3489,
+    "tags": ["Carb-rich", "Protein-rich", "Fibre"]
   },
   {
     "id": "l015",
@@ -178,6 +192,7 @@
     "area": "Secunderabad",
     "lat": 17.4399,
     "lng": 78.4983,
+    "tags": ["Carb-rich"],
     "status": "claimed",
     "ngoId": "ngo-002",
     "claimedAgo": 25
@@ -193,6 +208,7 @@
     "area": "Charminar",
     "lat": 17.3616,
     "lng": 78.4747,
+    "tags": ["Protein-rich"],
     "status": "picked_up",
     "ngoId": "ngo-001",
     "claimedAgo": 40,

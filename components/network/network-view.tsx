@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { buttonStyles } from "@/components/ui/button";
 import { DietMarker } from "@/components/ui/diet-marker";
-import { CountdownBar } from "@/components/board/countdown-bar";
+import { CountdownBar } from "@/components/ui/countdown-bar";
 import { Tracker } from "@/components/board/tracker";
 import { useToast } from "@/components/ui/toast";
 import type { Listing, NGO } from "@/types";

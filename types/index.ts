@@ -31,6 +31,8 @@ export interface Listing {
   deliveredAt?: string;
   /** Seed-only: minutes before app load when food was prepared. */
   minutesAgo?: number;
+  /** Nutrition profile linking the card to the Nutrition hub anchors. */
+  nutritionTags?: string[];
 }
 
 export interface NGO {
@@ -48,7 +50,7 @@ export interface NGO {
 }
 
 /** Filters on the Live Board. */
-export type BoardFilter = "all" | "urgent" | "veg" | "packaged";
+export type BoardFilter = "all" | "under1hour" | "veg" | "packaged" | "protein";
 
 /** City area summary for the home page breakdown. */
 export interface CityAreaStat {

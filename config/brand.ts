@@ -45,6 +45,14 @@ export const NUTRITION_TAGS = [
   "Vitamin-rich",
 ] as const;
 
+/** Tag label -> anchor on /nutrition (e.g. #nut-carbs). */
+export const TAG_ANCHORS: Record<string, string> = {
+  "Carb-rich": "nut-carbs",
+  "Protein-rich": "nut-protein",
+  "Fibre": "nut-fibre",
+  "Vitamin-rich": "nut-vitamins",
+};
+
 /* Sample ticker events (landing strip). */
 export const TICKER_EVENTS = [
   "LIVE · 120 servings claimed, Banjara Hills",
