@@ -1,60 +1,64 @@
 "use client";
 
-import { createContext, useCallback, useContext, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "@/lib/utils";
+import { AlertIcon, CheckIcon, InfoIcon } from "@/components/icons";
 
-type ToastKind = "success" | "error" | "info";
-interface Toast {
+type Tone = "success" | "error" | "info";
+
+export interface ToastItem {
   id: number;
-  kind: ToastKind;
   message: string;
+  tone: Tone;
 }
 
-const ToastContext = createContext<{ toast: (message: string, kind?: ToastKind) => void }>({
-  toast: () => {},
-});
+const ToastContext = createContext<(message: string, tone?: Tone) => void>(() => {});
 
 export function useToast() {
   return useContext(ToastContext);
 }
 
-const icons: Record<ToastKind, string> = { success: "✅", error: "⚠️", info: "🔔" };
-const tints: Record<ToastKind, string> = {
-  success: "border-emerald-500/40",
-  error: "border-rose-500/40",
-  info: "border-primary/40",
-};
-
+/** Announce confirmations politely; screen readers hear them without focus moves. */
 export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<Toast[]>([]);
-  const idRef = useRef(0);
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const nextId = useRef(1);
 
-  const toast = useCallback((message: string, kind: ToastKind = "success") => {
-    const id = ++idRef.current;
-    setToasts((prev) => [...prev, { id, kind, message }]);
+  const show = useCallback((message: string, tone: Tone = "success") => {
+    const id = nextId.current++;
+    setToasts((prev) => [...prev, { id, message, tone }]);
     window.setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 4200);
+    }, 4500);
   }, []);
 
   return (
-    <ToastContext.Provider value={{ toast }}>
+    <ToastContext.Provider value={show}>
       {children}
       <div
+        role="status"
         aria-live="polite"
-        className="pointer-events-none fixed inset-x-4 bottom-4 z-50 flex flex-col items-center gap-2 sm:inset-x-auto sm:right-4 sm:items-end"
+        className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex flex-col items-center gap-2 px-4"
       >
         {toasts.map((t) => (
           <div
             key={t.id}
-            role="status"
             className={cn(
-              "pointer-events-auto flex w-full max-w-sm items-start gap-2 rounded-xl border-l-4 bg-surface px-4 py-3 text-sm shadow-card animate-fade-up",
-              tints[t.kind]
+              "pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-card border bg-surface px-4 py-3 text-sm shadow-[var(--shadow-selected)] fade-up",
+              t.tone === "success" && "border-leaf/40",
+              t.tone === "error" && "border-chilli/50",
+              t.tone === "info" && "border-line",
             )}
           >
-            <span aria-hidden="true">{icons[t.kind]}</span>
-            <span className="flex-1">{t.message}</span>
+            {t.tone === "success" && <CheckIcon className="h-5 w-5 shrink-0 text-leaf" />}
+            {t.tone === "error" && <AlertIcon className="h-5 w-5 shrink-0 text-chilli" />}
+            {t.tone === "info" && <InfoIcon className="h-5 w-5 shrink-0 text-muted" />}
+            <span>{t.message}</span>
           </div>
         ))}
       </div>

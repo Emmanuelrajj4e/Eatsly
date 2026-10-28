@@ -31,7 +31,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       : "dark";
     document.documentElement.classList.toggle("dark", next === "dark");
     try {
-      localStorage.setItem("fb-theme", next);
+      localStorage.setItem("annadaan-theme", next);
     } catch {
       /* private mode: theme won't persist */
     }

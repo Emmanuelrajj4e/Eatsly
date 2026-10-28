@@ -1,78 +1,81 @@
-export type Role = "donor" | "ngo" | "volunteer" | "admin";
+/** Domain models shared by services, hooks and components. */
 
-export interface Profile {
+/** Food categories, each with its own safe-window length. */
+export type FoodType = "hot" | "sweets" | "packaged" | "produce";
+
+/** Lifecycle of a listing on the board. `expired` is derived at read time. */
+export type ListingStatus = "open" | "claimed" | "picked_up" | "delivered";
+
+/** Pin marker on the board — food listing is a pin, NGO is a diamond. */
+export type MapMarker = "pin" | "diamond";
+
+export interface Listing {
   id: string;
-  email: string;
-  name: string;
-  role: Role;
-  orgName?: string; // for NGOs
-  approved: boolean; // NGOs need admin approval before they can claim
-  address?: string;
-  lat?: number;
-  lng?: number;
-  createdAt: string; // ISO
-}
-
-export type DonationCategory = string;
-
-export type DonationStatus =
-  | "available"
-  | "claimed"
-  | "picked_up"
-  | "delivered"
-  | "expired"
-  | "cancelled";
-
-export interface Donation {
-  id: string;
+  /** Dish name, e.g. "Vegetable pulao". */
   title: string;
-  description: string;
-  category: DonationCategory;
-  isVeg: boolean;
+  type: FoodType;
+  veg: boolean;
   servings: number;
-  kg: number;
-  packedAt: string; // ISO
-  bestBefore: string; // ISO — expiry / safe-consume-by
-  address: string;
+  /** Last-cooked timestamp (ISO). Safe window runs from here. */
+  preparedAt: string;
+  donorName: string;
+  /** Area key, one of AREAS in config/brand data. */
+  area: string;
   lat: number;
   lng: number;
-  photoUrl?: string | null;
-  donorId: string;
-  donorName: string;
-  ngoId?: string | null;
-  ngoName?: string | null;
-  volunteerId?: string | null;
-  volunteerName?: string | null;
-  status: DonationStatus;
-  createdAt: string; // ISO
+  status: ListingStatus;
+  /** NGO that claimed this listing (id), set when status != open. */
+  ngoId?: string;
+  claimedAt?: string;
+  pickedUpAt?: string;
+  deliveredAt?: string;
+  /** Seed-only: minutes before app load when food was prepared. */
+  minutesAgo?: number;
 }
 
-export interface Notification {
+export interface NGO {
   id: string;
-  userId: string;
-  title: string;
-  body: string;
-  donationId?: string;
-  read: boolean;
-  createdAt: string;
+  name: string;
+  area: string;
+  lat: number;
+  lng: number;
+  /** Placeholder contact string, e.g. "+91 [contact]". */
+  contact: string;
+  /** Free text, e.g. "Bicycle pickup". */
+  vehicle: string;
+  /** true when added via the onboarding form. */
+  newlyAdded?: boolean;
 }
 
-export interface Report {
-  id: string;
-  donationId: string;
-  donationTitle: string;
-  reporterId: string;
-  reporterName: string;
-  reason: string;
-  status: "open" | "resolved";
-  createdAt: string;
+/** Filters on the Live Board. */
+export type BoardFilter = "all" | "urgent" | "veg" | "packaged";
+
+/** City area summary for the home page breakdown. */
+export interface CityAreaStat {
+  area: string;
+  donors: number;
+  ngos: number;
 }
 
+/** Impact dashboard numbers (all sample-data derived). */
 export interface ImpactStats {
-  meals: number;
-  kg: number;
-  co2: number;
-  deliveries: number;
-  activeListings: number;
-  partnerNgos: number;
+  mealsRescuedToday: number;
+  servingsWaitingNow: number;
+  kgSaved: number;
+  last7Days: number[];
 }
+
+/** Payload accepted by postSurplus() after form validation. */
+export interface PostListingInput {
+  title: string;
+  type: FoodType;
+  veg: boolean;
+  servings: number;
+  preparedAt: string;
+  donorName: string;
+  area: string;
+}
+
+export type PostResult =
+  | { ok: true; listing: Listing }
+  | { ok: false; error: string };

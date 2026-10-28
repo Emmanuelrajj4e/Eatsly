@@ -1,20 +1,24 @@
 import Link from "next/link";
+import { ClockIcon } from "@/components/icons";
+import { buttonStyles } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <main className="grid min-h-dvh place-items-center px-4 text-center">
+    <main className="grid min-h-[70vh] place-items-center px-4 text-center">
       <div>
-        <p aria-hidden="true" className="text-6xl">🍽️</p>
-        <h1 className="mt-4 text-2xl font-bold">Page not found</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you&apos;re looking for moved or never existed.
+        <ClockIcon className="mx-auto h-10 w-10 text-muted" />
+        <h1 className="mt-4 font-display text-3xl font-bold tracking-tight">Page not found</h1>
+        <p className="mt-2 max-w-sm text-sm text-muted">
+          That page moved or never existed. The clock waits for no meal — head back to the live board.
         </p>
-        <Link
-          href="/"
-          className="mt-6 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
-        >
-          Back home
-        </Link>
+        <div className="mt-6 flex justify-center gap-3">
+          <Link href="/board" className={buttonStyles("primary", "md")}>
+            Live board
+          </Link>
+          <Link href="/" className={buttonStyles("secondary", "md")}>
+            Back home
+          </Link>
+        </div>
       </div>
     </main>
   );
