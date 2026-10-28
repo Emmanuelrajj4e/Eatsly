@@ -119,7 +119,7 @@ export function ImpactDashboard() {
         </h2>
         <ul className="mt-2 list-inside list-disc space-y-1">
           <li>
-            Claiming moves servings from <em>w Waiting now</em> into a volunteer run —
+            Claiming moves servings out of <em>Waiting now</em> into a volunteer run —
             no food is counted rescued until it is delivered.
           </li>
           <li>

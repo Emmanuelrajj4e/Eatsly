@@ -1,38 +1,54 @@
-# FoodBridge — 3-minute pitch script
+# Annadaan — 3-minute pitch
 
-## 1 · Problem (30 s)
-India wastes **~78 million tonnes of food a year** while millions eat less than
-they need. The food exists. The people exist. What's missing is the last
-logistics hour — *who will take this tray, right now?*
+**Tagline: “Good food has a clock.” · Sample product for a hackathon demo · #AnnadaanClock**
 
-## 2 · Solution (30 s)
-**FoodBridge turns surplus into a three-tap rescue:**
-Post (60 seconds, photo + expiry timer) → Nearby NGO claims (live map +
-notifications) → Volunteer picks up and delivers → impact counted:
-**meals, kg, CO₂** — automatically.
+## The problem (30 s)
 
-Expiry is a first-class device: countdown on every card, urgent listings
-turn red, expired food auto-hides. No wasted trips, no unsafe food.
+In any Indian city, hotels, wedding halls, hostels and canteens throw away tons of safe,
+edible food every day — not because nobody wants it, but because **no one can tell if it
+is still safe by the time it reaches a serving line**. Every rescue call is a guess about
+time, and volunteers stop guessing after being late once.
 
-## 3 · Demo (90 s — judges follow along)
-1. Landing: live impact counters already moving.
-2. **Enter as NGO** → Browse (filters + map) → *Claim this donation*.
-3. **Enter as Volunteer** → My tasks → accept → *picked up* → *delivered*.
-4. **Enter as Admin** → approve the pending NGO, close a report.
-5. Back on **Impact**: leaderboard + counters changed in real time.
+## The idea (30 s)
 
-(30-second no-login variant: four demo buttons, one per role.)
+Annadaan puts a **transparent, honest clock on every meal**:
 
-## 4 · Impact & business (30 s)
-One wedding tray = 20–40 meals. Ten weddings = a neighborhood of dinners.
-Every delivery records meals/kg/CO₂, so donors get a **trustworthy impact
-receipt** — the hook that keeps restaurants and caterers posting weekly.
-Sustainable: green primary, warm orange accent, judges feel it in one glance.
+- Hot cooked food **4 h**, sweets & dry **12 h**, packaged **24 h**, produce **48 h**.
+- NGOs can claim only if their pickup **ETA lands ≥ 10 minutes** before the window ends —
+  the UI disables NGO options that cannot make it and says exactly why.
+- The whole city sees the same live board: countdowns, routes, one tracker per meal.
 
-## 5 · Future
-- Photo AI: suggest category, servings, safe-consume window.
-- Smart matching: rank NGOs by distance, capacity, past reliability.
-- Hindi/Telugu UI, PWA offline mode, WhatsApp notifications, email digests.
-- Corporate validator (FSSAI check) — bigger donors can self-verify.
+## Why platforms with drivers didn’t do this (30 s)
 
-**Ask:** NGO partner pilots in one district + 20 volunteer riders = first live city feed.
+Food rescue fails on *promise* mismatch, not on logistics. Rigid delivery networks
+promise timings that cooked food cannot keep. Annadaan flips the contract: **the clock
+selects who may claim what**, so no rescue run is doomed from the minute it starts.
+Volunteers in the demo claim runs that arrive in time, and impact counts only when a
+delivery is actually marked.
+
+## Live demo beats (90 s)
+
+1. **Home** — the “Next to spoil” ring ticking down, counters animating in, city grid.
+2. **Live board** — sort by time left; show the amber→red countdown bar; open a claim
+   dialog, watch an NGO get disabled (“arrives 9 min after cutoff”); claim one.
+3. **Tracker** — “Mark picked up” on the board (or the For-NGOs page) and watch the
+   impact dashboard’s *servings waiting* and *kg saved* move live.
+4. **Post surplus** — post a batch with a really-late cook time and show the honest
+   **“too late to post under 20 minutes”** block, then post a fresh batch that lands on
+   the board instantly.
+5. **For NGOs** — onboard “Madhapur Roti Bank” in 20 seconds; its diamond appears on the
+   map and in claim dialogs.
+
+## What the demo is honest about
+
+- All listings, NGOs, names and impact numbers are **sample data**, clearly labelled.
+- Bracketed footer items (`[Registration number]`, address, contacts) are placeholders —
+  no invented certifications.
+- The store is a service-layer demo (`services/*` + localStorage); swapping in a real
+  backend touches only that folder.
+
+## Ask
+
+A pilot city grant of three months: seed 50 donor kitchens, 10 NGOs, 20 volunteer rides
+per week in Hyderabad — measured by the same three numbers the site already computes live:
+**meals rescued, servings waiting, kg saved from the bin.**

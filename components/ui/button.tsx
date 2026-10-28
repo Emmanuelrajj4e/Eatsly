@@ -18,7 +18,7 @@ export function buttonStyles(
     variant === "secondary" &&
       "border border-line bg-surface text-foreground hover:bg-foreground/[0.04]",
     variant === "ghost" && "text-foreground hover:bg-foreground/[0.06]",
-    variant === "danger" && "bg-chilli text-white hover:brightness-95",
+    variant === "danger" && "bg-chilli text-background hover:brightness-105",
     size === "md" && "h-11 px-4 text-sm",
     size === "lg" && "h-12 px-6 text-base",
     className,

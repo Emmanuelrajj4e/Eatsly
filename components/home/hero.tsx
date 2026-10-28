@@ -20,20 +20,45 @@ const CIRC = 2 * Math.PI * RADIUS;
 /** Hero's live "next to spoil" card: ring countdown of the soonest listing. */
 export function HeroSoonest() {
   const [listing, setListing] = useState<Listing | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const now = useTicker() * 1000;
 
   // derive only after mount: seed offsets use Date.now(), not allowed at prerender
   useEffect(() => {
-    const id = window.requestAnimationFrame(() => setListing(soonestOpen()));
+    const id = window.requestAnimationFrame(() => {
+      setListing(soonestOpen());
+      setLoaded(true);
+    });
     return () => window.cancelAnimationFrame(id);
   }, []);
 
-  if (!listing) {
+  if (!loaded) {
     return (
       <div className="rounded-card border border-line bg-surface p-5" aria-hidden="true">
         <div className="h-4 w-40 animate-pulse rounded bg-foreground/10" />
         <div className="mt-4 h-8 w-28 animate-pulse rounded bg-foreground/[0.06]" />
         <div className="mt-3 h-3 w-48 animate-pulse rounded bg-foreground/[0.04]" />
+      </div>
+    );
+  }
+
+  if (!listing) {
+    return (
+      <div className="rounded-card border border-line bg-surface p-5">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-muted">
+          Next to spoil · live
+        </p>
+        <p className="mt-3 text-sm text-muted">
+          Nothing is waiting on the board right now. Post the first batch and this
+          clock starts running.
+        </p>
+        <Link
+          href="/post"
+          className={cn(buttonStyles("secondary", "md", "mt-4 w-full justify-between"))}
+        >
+          Post surplus
+          <ArrowRightIcon className="h-4 w-4" />
+        </Link>
       </div>
     );
   }
