@@ -11,7 +11,7 @@ const SOCIALS = ["X", "Instagram", "LinkedIn", "YouTube", "GitHub"] as const;
  */
 export function Footer() {
   return (
-    <footer className="mt-16 bg-ink text-[#E8ECFA]">
+    <footer className="mt-16 bg-ink text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-[1.25fr_0.85fr_1fr_1.1fr]">
         <div>
           <Logo variant="light" />
@@ -47,7 +47,7 @@ export function Footer() {
               <li key={l.href}>
                 <Link
                   href={l.href}
-                  className="inline-flex min-h-8 items-center rounded-md underline-offset-4 hover:underline"
+                  className="inline-flex min-h-11 items-center rounded-md underline-offset-4 hover:underline"
                 >
                   {l.label}
                 </Link>
@@ -76,7 +76,7 @@ export function Footer() {
           </h2>
           <a
             href="#"
-            className="mt-2 inline-block min-h-8 leading-6 underline decoration-white/30 underline-offset-4 hover:decoration-white/70"
+            className="mt-2 inline-flex min-h-11 items-center rounded-md underline decoration-white/30 underline-offset-4 hover:decoration-white/70"
           >
             [Annual report — publish placeholder]
           </a>
@@ -97,7 +97,7 @@ export function Footer() {
               <li key={l}>
                 <a
                   href="#"
-                  className="inline-flex min-h-8 items-center rounded-md underline decoration-white/30 underline-offset-4 hover:decoration-white/70"
+                  className="inline-flex min-h-11 items-center rounded-md underline decoration-white/30 underline-offset-4 hover:decoration-white/70"
                 >
                   [{l} — placeholder]
                 </a>

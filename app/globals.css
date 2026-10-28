@@ -129,7 +129,7 @@ h3 {
   background: var(--surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: #c9d2cd;
+  background: var(--line);
   border: 5px solid var(--surface);
   border-radius: 9px;
 }
@@ -217,7 +217,7 @@ h3 {
 
 /* Leaflet: colourful standard tiles, no filter */
 .leaflet-container {
-  background: #b8d4de; /* water tint while tiles load */
+  background: var(--blue-tint); /* water tint while tiles load */
   font-family: var(--font-sans), sans-serif;
 }
 .leaflet-control-attribution {

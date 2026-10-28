@@ -52,7 +52,7 @@ function MiniTrackCard() {
       {/* mini map: streets, route, pins, moving volunteer */}
       <svg viewBox="0 0 264 116" className="mt-2 w-full rounded-xl bg-blue-tint" aria-hidden="true">
         {/* streets */}
-        <g stroke="#ffffff" strokeWidth="7" strokeLinecap="round" fill="none">
+        <g stroke="var(--green-tint)" strokeWidth="7" strokeLinecap="round" fill="none">
           <path d="M8 30 H256" />
           <path d="M8 62 H256" />
           <path d="M8 92 H256" />
@@ -60,13 +60,13 @@ function MiniTrackCard() {
           <path d="M118 8 V108" />
           <path d="M196 8 V108" />
         </g>
-        <g stroke="#e3ecdf" strokeWidth="2.5" strokeLinecap="round" fill="none">
+        <g stroke="var(--line)" strokeWidth="2.5" strokeLinecap="round" fill="none">
           <path d="M0 46 H264" opacity="0.8" />
           <path d="M160 0 V116" opacity="0.8" />
         </g>
         {/* park + water blobs for colour */}
-        <ellipse cx="226" cy="24" rx="30" ry="13" fill="#bfe6cf" />
-        <ellipse cx="30" cy="98" rx="26" ry="10" fill="#a9d5ea" />
+        <ellipse cx="226" cy="24" rx="30" ry="13" fill="var(--green-tint)" />
+        <ellipse cx="30" cy="98" rx="26" ry="10" fill="var(--blue-tint)" />
         {/* travelled (solid green) + remaining (dashed blue) */}
         <path d="M52 30 V62" stroke="var(--green)" strokeWidth="4" strokeLinecap="round" fill="none" />
         <path

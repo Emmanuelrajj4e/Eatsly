@@ -120,7 +120,7 @@ export function Faq() {
 /** n. Final CTA on ink with the second quote + all three role doors. */
 export function FinalCta() {
   return (
-    <section aria-label="Get started" className="border-t border-line bg-ink text-[#E8ECFA]">
+    <section aria-label="Get started" className="border-t border-line bg-ink text-white">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-[1.2fr_minmax(0,1fr)] md:items-end">
         <div>
           <h2 className="font-quote text-4xl italic leading-tight md:text-6xl">

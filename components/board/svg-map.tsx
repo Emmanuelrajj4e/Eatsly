@@ -73,7 +73,7 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
         />
 
         {/* water: Hussain Sagar + Musi river */}
-        <ellipse cx="349" cy="248" rx="30" ry="23" fill="var(--blue-tint)" stroke="#9FC6DF" />
+        <ellipse cx="349" cy="248" rx="30" ry="23" fill="var(--blue-tint)" stroke="#FFFFFF" />
         <text x="349" y="282" textAnchor="middle" fontSize="10" fontFamily="var(--font-mono)" fill="var(--muted)">
           Hussain Sagar
         </text>

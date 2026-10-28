@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { PostForm } from "@/components/post/post-form";
+import { RequireRole } from "@/components/require-role";
 import { Tag } from "@/components/ui/chip";
 
 export const metadata: Metadata = {
   title: "Post surplus",
 };
 
+/** `/post` is the donor's tool; everyone else is pointed to /start. */
 export default function PostPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
+    <RequireRole roles={["donor"]}>
+      <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="max-w-xl">
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
@@ -25,5 +28,6 @@ export default function PostPage() {
 
       <PostForm />
     </div>
+    </RequireRole>
   );
 }

@@ -40,7 +40,7 @@ const THALI_TINTS = [
   "var(--blue-tint)",
   "var(--yellow-tint)",
   "var(--red-tint)",
-  "#E3E8E5",
+  "var(--line)",
 ];
 
 const FOODS = data.foods as Food[];

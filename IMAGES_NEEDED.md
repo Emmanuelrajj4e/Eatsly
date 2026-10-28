@@ -1,36 +1,39 @@
-# Images needed
+# Images needed (Eatsly, colour edition)
 
-All photography currently renders as a monochrome pattern placeholder block
-(`components/landing/pattern-image.tsx`) with a caption, so the layout never looks
-broken. Drop the real files into `public/images/` using the exact names below, keep
-them grayscale (the site also applies a grayscale CSS treatment), and add a credit line
-in the footer for any licence that requires attribution.
+Image licences **cannot be verified programmatically** in this environment, so no
+photo has been downloaded or hotlinked. Until verified free-licence files
+(Unsplash / Pexels licences) are placed here, every photo slot renders as a
+**flat brand-tint placeholder block** (`components/landing/pattern-image.tsx`)
+with a text label — never an invented URL.
 
-Suggested licence sources: Unsplash (Unsplash Licence), Pexels (Pexels Licence). Verify
-the licence on each photo page yourself before committing — do not hotlink files.
+## Files to add under `public/images/` (colour, no grayscale filters)
 
-| # | File name | Subject | Orientation | Suggested search terms |
-|---|-----------|---------|-------------|------------------------|
-| 1 | `hero-hands-sharing-meal.jpg` | Two hands passing a steel plate of food | Landscape 4:3 | "hands giving food plate charity" |
-| 2 | `community-kitchen.jpg` | Community kitchen with large pots and volunteers | Landscape 3:2 | "community kitchen serving volunteers" |
-| 3 | `volunteer-delivery-scooter.jpg` | Volunteer carrying food bag on a scooter | Landscape 3:2 | "scooter delivery food bag street india" |
-| 4 | `market-fresh-produce.jpg` | Fresh vegetables at a wholesale market | Landscape 4:3 | "indian wholesale vegetable market" |
-| 5 | `thali-closeup.jpg` | Indian thali plate, top-down | Square or 4:3 | "indian thali top view" |
-| 6 | `ngo-serving-line.jpg` | Serving line where plates are filled | Landscape 3:2 | "food distribution serving line ngo" |
-| 7 | `bakery-surplus-bread.jpg` | Trays of bread and buns | Landscape 4:3 | "bakery bread trays unsold" |
-| 8 | `wedding-hall-buffet.jpg` | Wedding/buffet trays after an event | Landscape 3:2 | "wedding banquet buffet trays leftover" |
+| Filename | Subject | Orientation / aspect | Search terms |
+| --- | --- | --- | --- |
+| `hero-hands-sharing-meal.jpg` | Hands passing a plate/plastic-wrapped meal | portrait-lean, 4:3.4 | "hands sharing meal", "akash patel food bank", "charity meal hands" |
+| `community-kitchen.jpg` | Community kitchen or mess line, steam visible | landscape, 3:2 | "community kitchen India", "langar kitchen", "m ess cooking" |
+| `volunteer-delivery-scooter.jpg` | Volunteer rider on a scooter with a carry box | landscape, 3:2 | "delivery scooter box", "food delivery volunteer India" |
+| `market-fresh-produce.jpg` | Baskets of fresh vegetables at an Indian market | landscape, 3:2 | "india vegetable market baskets", "mandi produce" |
+| `thali-closeup.jpg` | Indian thali plate close-up | landscape, 3:2 | "thali closeup", "indian meal plate top view" |
+| `ngo-serving-line.jpg` | NGO kitchen serving bowls down a table | landscape, 3:2 | "ngo food serving line India", "soup kitchen serving" |
+| `bakery-surplus-bread.jpg` | Trays of surplus bread and pastries | landscape, 3:2 | "electric bakery trays bread", "bakery unsold bread" |
+| `wedding-hall-buffet.jpg` | Buffet trays in a wedding/function hall | landscape, 3:2 | "wedding buffet trays", "function hall catering India" |
 
-Placement notes:
+## Where each is used
 
-- `hero-hands-sharing-meal.jpg` — landing hero (right column, `4 / 3`).
-- `community-kitchen.jpg` — reserved for the stories section band.
-- `volunteer-delivery-scooter.jpg` — How it works → “Track” step.
-- `market-fresh-produce.jpg` — How it works → “Claim” step.
-- `thali-closeup.jpg` — Nutrition hub, above the Plate Builder.
-- `ngo-serving-line.jpg` — How it works → “Serve” step.
-- `bakery-surplus-bread.jpg` — Post surplus page side note.
-- `wedding-hall-buffet.jpg` — How it works → “Post” step.
+- Hero (c): hero-hands-sharing-meal
+- How it works (g): wedding-hall-buffet → market-fresh-produce → volunteer-delivery-scooter → ngo-serving-line
+- FAQ / nutrition sections currently use tint placeholders only.
 
-When a file lands: swap the matching `PatternImage` for an `<img>` with
-`loading="lazy"` (eager only for the hero), fixed aspect ratio, `object-fit: cover`,
-meaningful alt text, the `.photo` class, and a footer credit line if needed.
+## Rules when adding them
+
+1. Only verified free-licence images; record author + licence URL in the footer
+   credit line (placeholder already reserved there).
+2. Real colour photography, never grayscale.
+3. `object-fit: cover` with the aspect ratios above; lazy-load everything except
+   the hero (preload hero only).
+4. Prefer hands, plates, kitchens, streets; avoid identifiable close-ups of
+   children.
+5. Alt text should describe the action, not the brand.
+
+Placeholders are intentional and visible until then — the UI never fakes URLs.

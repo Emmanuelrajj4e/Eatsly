@@ -14,7 +14,7 @@ export function DemoReset() {
         resetDemoData();
         window.location.reload();
       }}
-      className="cursor-pointer rounded-md font-medium text-white/75 underline decoration-white/30 underline-offset-4 transition-colors hover:text-white hover:decoration-white/70"
+      className="inline-flex min-h-11 cursor-pointer items-center rounded-md font-medium text-white/75 underline decoration-white/30 underline-offset-4 transition-colors hover:text-white hover:decoration-white/70"
     >
       Reset demo data
     </button>
