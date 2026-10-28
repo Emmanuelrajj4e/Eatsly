@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96" role="img" aria-label="Eatsly mark">
+  <title>Eatsly</title>
+  <!-- map pin in brand green -->
+  <path
+    d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"
+    fill="#0B7A55"
+    stroke="#0B7A55"
+    stroke-width="1"
+    stroke-linejoin="round"
+  />
+  <!-- white plate: rim + thinner inner ring -->
+  <circle cx="12" cy="10" r="3.4" fill="none" stroke="#FFFFFF" stroke-width="1.7" />
+  <circle cx="12" cy="10" r="1.8" fill="none" stroke="#FFFFFF" stroke-width="1.05" />
+  <!-- orange leaf at the top-right of the plate -->
+  <path d="M15.4 6.3 Q15.4 4.5 17.2 4.5 Q17.2 6.3 15.4 6.3 Z" fill="#FF7A1A" />
+</svg>

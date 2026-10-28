@@ -6,9 +6,12 @@ import type { Listing } from "@/types";
 import { cn } from "@/lib/utils";
 
 /**
- * Live countdown numerals + progress bar, form encodes state:
- * URGENT (<30 min): striped diagonal bar. SOON (<90): 2px ink border around
- * the block. Normal: hairline + solid bar. Expired: dotted, 50% opacity.
+ * Live countdown numerals + progress bar. State = colour AND text label
+ * (never colour alone):
+ * Urgent <30 min: red + barber stripes → chip "Urgent"
+ * Soon 30–90 min: yellow bar → chip "Soon"
+ * Fresh >90 min: green bar → chip "Fresh"
+ * Expired: dashed gray, 60% opacity → label "Window closed"
  */
 export function CountdownBar({
   listing,
@@ -29,31 +32,46 @@ export function CountdownBar({
   const expired = left <= 0;
   const urgent = !expired && mins < 30;
   const soon = !expired && !urgent && mins < 90;
+  const stateLabel = expired ? "Window closed" : urgent ? "Urgent" : soon ? "Soon" : "Fresh";
 
   return (
-    <div className={className} aria-label={`Safe time left: ${fmtCountdown(left)}`}>
-      <p
-        className={cn(
-          "font-mono tabular-nums",
-          compact ? "text-lg" : "text-3xl font-semibold",
-          expired && "text-muted [opacity:0.6]",
-        )}
-      >
-        {fmtCountdown(left)}
-      </p>
+    <div className={className} aria-label={`Safe time left: ${fmtCountdown(left)} — ${stateLabel}`}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <p
+          className={cn(
+            "font-mono tabular-nums",
+            compact ? "text-lg" : "text-3xl font-semibold",
+            expired && "text-muted [opacity:0.6]",
+          )}
+        >
+          {fmtCountdown(left)}
+        </p>
+        <p
+          className={cn(
+            " rounded-full px-2 py-0.5 font-mono text-[11px] uppercase tracking-wide",
+            urgent && "bg-red text-white",
+            soon && "bg-yellow text-ink",
+            !expired && !urgent && !soon && "bg-green text-white",
+            expired && "bg-line text-muted",
+          )}
+        >
+          {stateLabel}
+        </p>
+      </div>
       <div
         className={cn(
-          "mt-1.5 h-2 border",
-          soon && "border-line-strong",
-          expired && "border-dotted border-line [opacity:0.6]",
+          "mt-1.5 h-2 rounded-full border border-line bg-surface",
+          expired && "border-dashed [opacity:0.6]",
         )}
         aria-hidden="true"
       >
         <div
           className={cn(
-            "h-full",
-            urgent ? "bar-striped" : "bg-foreground",
-            expired && "[opacity:0.35]",
+            "h-full rounded-full",
+            !expired && urgent ? "bar-striped" : "",
+            !expired && !soon && "bg-green",
+            !expired && soon && "bg-yellow",
+            expired && "bg-muted [opacity:0.5]",
           )}
           style={{
             width: `${share * 100}%`,
@@ -61,7 +79,7 @@ export function CountdownBar({
           }}
         />
       </div>
-      <p className="mt-1 font-mono text-[11px] text-muted">
+      <p className={cn("mt-1 font-mono text-[11px] text-muted", expired && "[opacity:0.6]")}>
         {expired ? "Safe window closed" : `Safe until ${fmtClock(new Date(end).toISOString())}`}
       </p>
     </div>

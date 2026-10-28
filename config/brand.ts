@@ -1,4 +1,4 @@
-/** Single place to rename or re-tune the product. Eatsly, strictly monochrome. */
+/** Single place to rename or re-tune the product. Eatsly, warm and colourful. */
 
 export const APP_NAME = "Eatsly";
 export const APP_TAGLINE = "Every plate, on time.";
@@ -53,16 +53,12 @@ export const TAG_ANCHORS: Record<string, string> = {
   "Vitamin-rich": "nut-vitamins",
 };
 
-/* Sample ticker events (landing strip). */
-export const TICKER_EVENTS = [
-  "LIVE · 120 servings claimed, Banjara Hills",
-  "LIVE · 40 servings claimed, Charminar",
-  "LIVE · Delivered, Uppal",
-  "LIVE · 30 servings claimed, Secunderabad",
-  "LIVE · Volunteer assigned, Madhapur",
-  "LIVE · Delivered, LB Nagar",
-  "LIVE · 50 servings claimed, Gachibowli",
-  "LIVE · Picked up, Begumpet",
+/* Sample announcement-bar messages (rotating on the landing page). */
+export const ANNOUNCEMENTS = [
+  "3 deliveries on the way in Hyderabad right now",
+  "120 servings claimed in Banjara Hills",
+  "60 packaged items just dropped in Begumpet",
+  "A 30-serving thali run is minutes from delivery",
 ];
 
 /** Featured demo tracking ID (drives the tracking page + drawer demo). */

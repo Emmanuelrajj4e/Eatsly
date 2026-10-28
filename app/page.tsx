@@ -1,4 +1,3 @@
-import { TickerStrip } from "@/components/footer";
 import { Hero } from "@/components/landing/hero";
 import { ServesRow, MissionBlack } from "@/components/landing/band-sections";
 import { ImpactGrid } from "@/components/landing/impact-grid";
@@ -18,7 +17,6 @@ import { CityBreakdown, Stories, Faq, FinalCta } from "@/components/landing/sect
 export default function HomePage() {
   return (
     <>
-      <TickerStrip />
       <Hero />
       <ServesRow />
       <MissionBlack />

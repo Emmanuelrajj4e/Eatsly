@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32">
+  <title>Eatsly</title>
+  <!-- simplified mark: pin + plate rim only (below 24px hide ring and leaf) -->
+  <path
+    d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"
+    fill="#0B7A55"
+    stroke="#0B7A55"
+    stroke-width="1"
+    stroke-linejoin="round"
+  />
+  <circle cx="12" cy="10" r="3.4" fill="none" stroke="#FFFFFF" stroke-width="1.9" />
+</svg>

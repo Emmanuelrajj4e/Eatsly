@@ -49,15 +49,22 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             className={cn(
-              "pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-card border bg-background px-4 py-3 text-sm fade-up",
-              t.tone === "success" && "border-line-strong",
-              t.tone === "error" && "border-foreground border-2",
-              t.tone === "info" && "border-line",
+              "pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-card border bg-surface px-4 py-3 text-sm fade-up",
+              "shadow-[0_18px_40px_-18px_rgb(18_33_63/0.22)]",
+              t.tone === "success" && "border-green",
+              t.tone === "error" && "border-red border-2",
+              t.tone === "info" && "border-blue",
             )}
           >
-            {t.tone === "success" && <Check className="h-5 w-5 shrink-0" strokeWidth={1.5} />}
-            {t.tone === "error" && <CircleAlert className="h-5 w-5 shrink-0" strokeWidth={1.5} />}
-            {t.tone === "info" && <Info className="h-5 w-5 shrink-0" strokeWidth={1.5} />}
+            {t.tone === "success" && (
+              <Check className="h-5 w-5 shrink-0 text-green" strokeWidth={1.5} />
+            )}
+            {t.tone === "error" && (
+              <CircleAlert className="h-5 w-5 shrink-0 text-red" strokeWidth={1.5} />
+            )}
+            {t.tone === "info" && (
+              <Info className="h-5 w-5 shrink-0 text-blue" strokeWidth={1.5} />
+            )}
             <span>{t.message}</span>
           </div>
         ))}
