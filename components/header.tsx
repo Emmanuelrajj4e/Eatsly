@@ -7,8 +7,11 @@ import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { buttonStyles } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
+import { ROLE_LABELS } from "@/services/auth";
+import type { Role } from "@/services/auth";
 
-const NAV = [
+const BASE_NAV = [
   { href: "/why", label: "Why Eatsly" },
   { href: "/#how", label: "How it works" },
   { href: "/nutrition", label: "Nutrition" },
@@ -16,10 +19,36 @@ const NAV = [
   { href: "/impact", label: "Impact" },
 ];
 
-export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+/** Role-gated menu items: the Board is only ever shown to NGO + Volunteer. */
+const ROLE_NAV: Partial<Record<Role, Array<{ href: string; label: string }>>> = {
+  ngo: [
+    { href: "/board", label: "Board" },
+    { href: "/pickups", label: "Pickups" },
+  ],
+  volunteer: [
+    { href: "/pickups", label: "Pickups" },
+    { href: "/board", label: "Board" },
+  ],
+  donor: [{ href: "/post", label: "Post food" }],
+};
+
+const BADGE_DOTS: Record<Role, string> = {
+  donor: "bg-orange",
+  ngo: "bg-green",
+  volunteer: "bg-blue",
+};
+
+export function NavLinks({
+  onNavigate,
+  role = null,
+}: {
+  onNavigate?: () => void;
+  role?: Role | null;
+}) {
+  const links = [...BASE_NAV, ...(role ? (ROLE_NAV[role] ?? []) : [])];
   return (
     <>
-      {NAV.map((l) => (
+      {links.map((l) => (
         <Link
           key={l.href}
           href={l.href}
@@ -33,9 +62,35 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+/** Small role pill + "Switch role" (shown once a demo sign-in exists). */
+function RoleBadge({ compact = false }: { compact?: boolean }) {
+  const auth = useAuth();
+  if (!auth) return null;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5",
+        compact && "self-start",
+      )}
+    >
+      <span className={cn("h-2.5 w-2.5 rounded-full", BADGE_DOTS[auth.role])} aria-hidden="true" />
+      <span className="text-sm font-semibold leading-none">
+        {auth.name}, {ROLE_LABELS[auth.role]}
+      </span>
+      <Link
+        href="/start"
+        className="ml-1 font-mono text-[10px] uppercase tracking-wide text-blue underline-offset-4 hover:underline"
+      >
+        Switch role
+      </Link>
+    </span>
+  );
+}
+
 /** Sticky header: logo, primary links (brief §1b), strong CTAs. */
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const auth = useAuth();
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -58,10 +113,13 @@ export function Header() {
         </Link>
 
         <nav aria-label="Primary" className="ml-2 hidden items-center md:flex">
-          <NavLinks />
+          <NavLinks role={auth?.role ?? null} />
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <span className="hidden lg:inline-flex">
+            <RoleBadge />
+          </span>
           <Link
             href="/start"
             className={cn(buttonStyles("primary", "md", "hidden min-[420px]:inline-flex"))}
@@ -84,7 +142,13 @@ export function Header() {
       {menuOpen && (
         <div id="mobile-menu" className="border-t border-line bg-surface px-4 py-3 md:hidden">
           <nav aria-label="Primary mobile" className="flex flex-col">
-            <NavLinks onNavigate={() => setMenuOpen(false)} />
+            <NavLinks
+              role={auth?.role ?? null}
+              onNavigate={() => setMenuOpen(false)}
+            />
+            <span className="mt-2">
+              <RoleBadge compact />
+            </span>
             <Link
               href="/start"
               onClick={() => setMenuOpen(false)}

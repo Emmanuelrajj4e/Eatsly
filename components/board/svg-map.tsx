@@ -21,9 +21,9 @@ export interface MapProps {
 
 /**
  * Stylised Hyderabad SVG map — the offline fallback for the Leaflet map.
- * Real area positions, abstracted geography. Form encodes state (no hue):
- * solid pin = open, pulse ring = urgent, thick hollow ring = claimed,
- * dashed = expired. Keyboard-operable pins.
+ * Real area positions, abstracted geography, brand colours: orange pins
+ * (open), green diamonds (NGOs), blue rings (claimed), red pulse for
+ * urgent, gray for expired. Keyboard-operable pins.
  */
 export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps) {
   const selectedListing = listings.find((l) => l.id === selectedId) ?? null;
@@ -73,15 +73,15 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
         />
 
         {/* water: Hussain Sagar + Musi river */}
-        <ellipse cx="349" cy="248" rx="30" ry="23" fill="var(--wash)" stroke="var(--line)" />
+        <ellipse cx="349" cy="248" rx="30" ry="23" fill="var(--blue-tint)" stroke="#9FC6DF" />
         <text x="349" y="282" textAnchor="middle" fontSize="10" fontFamily="var(--font-mono)" fill="var(--muted)">
           Hussain Sagar
         </text>
         <path
           d="M 20 392 C 120 396 220 394 320 394 C 400 394 470 410 566 419"
           fill="none"
-          stroke="var(--line)"
-          strokeWidth="3.5"
+          stroke="var(--blue-tint)"
+          strokeWidth="4"
         />
         <text x="150" y="382" fontSize="10" fontFamily="var(--font-mono)" fill="var(--muted)">
           Musi river
@@ -115,13 +115,13 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
               y1={route.from.y}
               x2={route.to.x}
               y2={route.to.y}
-              stroke="var(--foreground)"
+              stroke="var(--blue)"
               strokeWidth="2.5"
               strokeDasharray="6 6"
             />
             <g transform={`translate(${(route.from.x + route.to.x) / 2} ${(route.from.y + route.to.y) / 2})`}>
-              <rect x="-34" y="-11" width="68" height="20" fill="var(--foreground)" />
-              <text textAnchor="middle" y="4" fontSize="11" fontFamily="var(--font-mono)" fill="var(--background)">
+              <rect x="-34" y="-11" width="68" height="20" rx="6" fill="var(--green)" />
+              <text textAnchor="middle" y="4" fontSize="11" fontFamily="var(--font-mono)" fill="#FFFFFF">
                 {route.label}
               </text>
             </g>
@@ -149,13 +149,13 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
               }}
               className="cursor-pointer"
             >
-              {selected && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="var(--foreground)" strokeWidth="2" />}
+              {selected && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="var(--blue)" strokeWidth="2" />}
               <path
                 transform={`translate(${p.x} ${p.y}) rotate(45)`}
                 d="M -6 0 L 0 -6 L 6 0 L 0 6 Z"
                 transform-origin={`${p.x} ${p.y}`}
-                fill="var(--background)"
-                stroke="var(--foreground)"
+                fill="#FFFFFF"
+                stroke="var(--green)"
                 strokeWidth="1.8"
               />
             </g>
@@ -197,27 +197,27 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
                   cy={p.y}
                   r="10"
                   fill="none"
-                  stroke="var(--foreground)"
+                  stroke="var(--red)"
                   strokeWidth="2"
                   className="animate-pulse-ring"
                   style={{ transformBox: "fill-box", transformOrigin: "center" }}
                 />
               )}
-              {selected && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="var(--foreground)" strokeWidth="2" />}
+              {selected && <circle cx={p.x} cy={p.y} r="13" fill="none" stroke="var(--blue)" strokeWidth="2" />}
               {claimed ? (
-                <circle cx={p.x} cy={p.y} r="7.5" fill="none" stroke="var(--foreground)" strokeWidth="3.5" />
+                <circle cx={p.x} cy={p.y} r="7.5" fill="none" stroke="var(--blue)" strokeWidth="3.5" />
               ) : (
                 <circle
                   cx={p.x}
                   cy={p.y}
                   r="7.5"
-                  fill="var(--foreground)"
-                  stroke="var(--foreground)"
+                  fill={expired ? "var(--muted)" : "var(--orange)"}
+                  stroke={expired ? "var(--muted)" : "var(--orange)"}
                   strokeWidth={expired ? 0 : 2}
                   strokeDasharray={expired ? "3 3" : undefined}
                 />
               )}
-              <circle cx={p.x} cy={p.y} r="2.4" fill="var(--background)" strokeDasharray={expired ? "2 2" : undefined} />
+              <circle cx={p.x} cy={p.y} r="2.4" fill="#FFFFFF" strokeDasharray={expired ? "2 2" : undefined} />
             </g>
           );
         })}
@@ -225,14 +225,14 @@ export function SvgMap({ listings, ngos, nowMs, selectedId, onSelect }: MapProps
 
       <figcaption className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] text-muted">
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-foreground" /> pin: listing
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-orange" /> pin: listing
         </span>
         <span className="inline-flex items-center gap-1.5">
           <MarkDiamond /> diamond: NGO
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span
-            className="inline-block h-2.5 w-2.5 rounded-full border-2 border-foreground animate-pulse-ring"
+            className="inline-block h-2.5 w-2.5 rounded-full border-2 border-red animate-pulse-ring"
             style={{ transformBox: "fill-box" }}
           />
           pulse: under 30 min

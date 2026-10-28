@@ -77,13 +77,17 @@ export function ClaimDialog({
                     className={cn(
                       "flex w-full items-center justify-between gap-3 rounded-card border p-3 text-left transition-colors",
                       ok
-                        ? "cursor-pointer border-line bg-surface hover:border-line-strong hover:bg-wash"
-                        : "cursor-not-allowed border-line/70 bg-background opacity-75",
+                        ? "cursor-pointer border-line bg-surface hover:border-green hover:bg-green-tint"
+                        : "cursor-not-allowed border-line bg-background opacity-70",
                     )}
                   >
                     <span>
                       <span className="flex items-center gap-2 font-medium">
-                        {ok && <Check className="h-4 w-4 text-foreground" strokeWidth={2} />}
+                        {ok ? (
+                          <Check className="h-4 w-4 text-green" strokeWidth={2.5} />
+                        ) : (
+                          <span className="h-4 w-4 rounded-full border border-muted" aria-hidden="true" />
+                        )}
                         {ngo.name}
                       </span>
                       <span className="mt-0.5 block font-mono text-xs text-muted">{ngo.area}</span>

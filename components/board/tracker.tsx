@@ -11,8 +11,8 @@ import type { Listing } from "@/types";
 const STEPS = ["Claimed", "Picked up", "Delivered"] as const;
 
 /**
- * Horizontal three-step tracker; volunteers advance the run on the card
- * itself. Done steps fill solid, current is ringed, form not colour.
+ * Horizontal three-step tracker; NGO/volunteer advance the run on the card
+ * itself. Done = solid green, current = blue ring; label text rides along.
  */
 export function Tracker({
   listing,
@@ -49,13 +49,13 @@ export function Tracker({
               <span
                 className={cn(
                   "grid h-5 w-5 shrink-0 place-items-center rounded-full border font-mono text-[10px]",
-                  done && "border-transparent bg-foreground text-background",
-                  current && "border-line-strong border-2 text-foreground",
+                  done && "border-transparent bg-green text-white",
+                  current && "border-blue border-2 text-blue",
                   !done && !current && "border-line text-muted",
                 )}
                 aria-current={current ? "step" : undefined}
               >
-                {done ? <Check className="h-3 w-3" strokeWidth={2} /> : i + 1}
+                {done ? <Check className="h-3 w-3" strokeWidth={2.5} /> : i + 1}
               </span>
               <span
                 className={cn(
@@ -68,7 +68,7 @@ export function Tracker({
               {i < STEPS.length - 1 && (
                 <span
                   aria-hidden="true"
-                  className={cn("mx-1 h-px flex-1", i < idx ? "bg-foreground" : "bg-line")}
+                  className={cn("mx-1 h-0.5 flex-1 rounded-full", i < idx ? "bg-green" : "bg-line")}
                 />
               )}
             </li>
@@ -80,7 +80,7 @@ export function Tracker({
         <button
           type="button"
           onClick={stepForward}
-          className={cn(buttonStyles("primary", "md", "mt-3 w-full"))}
+          className={cn(buttonStyles("green", "md", "mt-3 w-full"))}
         >
           Mark picked up
         </button>
@@ -89,13 +89,14 @@ export function Tracker({
         <button
           type="button"
           onClick={stepForward}
-          className={cn(buttonStyles("primary", "md", "mt-3 w-full"))}
+          className={cn(buttonStyles("green", "md", "mt-3 w-full"))}
         >
           Mark delivered
         </button>
       )}
       {listing.status === "delivered" && (
-        <p className="mt-3 border border-line px-3 py-2 text-sm text-foreground">
+        <p className="mt-3 rounded-btn border border-green bg-green-tint px-3 py-2 text-sm text-ink">
+          <Check className="mr-1.5 inline h-4 w-4 text-green" strokeWidth={2.5} aria-hidden="true" />
           Food delivered and served. {listing.title} is a meal rescued.
         </p>
       )}
@@ -103,9 +104,9 @@ export function Tracker({
         <button
           type="button"
           onClick={() => onTrack(listing.id)}
-          className={cn(buttonStyles("secondary", "md", "mt-2 w-full"))}
+          className={cn(buttonStyles("outline-blue", "md", "mt-2 w-full"))}
         >
-          <Route className="h-4 w-4" strokeWidth={1.5} />
+          <Route className="h-4 w-4" strokeWidth={2} />
           Track live
         </button>
       )}

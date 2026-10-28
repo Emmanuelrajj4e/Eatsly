@@ -1,5 +1,7 @@
+import { twMerge } from "tailwind-merge";
+
 export function cn(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
+  return twMerge(classes.filter(Boolean).join(" "));
 }
 
 /** "2h 14m" style remaining time from ms (>0). */

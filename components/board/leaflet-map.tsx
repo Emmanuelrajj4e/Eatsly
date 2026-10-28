@@ -20,10 +20,10 @@ export interface LeafletMapProps {
 const CENTER: [number, number] = [17.404, 78.467];
 
 /**
- * Real Leaflet map: OSM tiles rendered grayscale by CSS, black/white markers,
- * dashed route + distance label for the selection. Markers are keyboard
- * operable via Leaflet's keyboard handling (tab stops; Enter/Space fire click).
- * Loaded client-side only through map-panel.tsx.
+ * Real Leaflet map: colourful standard tiles, brand-colour markers,
+ * dashed blue route + distance label for the selection. Markers are
+ * keyboard operable via Leaflet's keyboard handling (tab stops; Enter/Space
+ * fire click). Loaded client-side only through map-panel.tsx.
  */
 export default function LeafletMap({
   listings,
@@ -156,22 +156,33 @@ function claimState(l: Listing) {
   return (l.status ?? "").replace("_", " ");
 }
 
-/** Marker art in pure black/white; form codes state: pulse = urgent ring. */
+/**
+ * Marker art in brand colour: orange pin = open listing (red pulse <30 min),
+ * blue + check = claimed, gray = expired. Form (ring/check/stripes) always
+ * rides along so the hue is never the only signal.
+ */
 function renderIcon(urgent: boolean, expired: boolean, selected: boolean, claimed: boolean) {
-  return `<span style="color: ${
-    expired ? "var(--muted)" : "var(--foreground)"
-  }; opacity: ${expired ? 0.55 : 1}; display: grid; place-items: center; width: 26px; height: 26px; position: relative;">
+  const colour = expired
+    ? "var(--muted)"
+    : claimed
+      ? "var(--blue)"
+      : urgent
+        ? "var(--red)"
+        : "var(--orange)";
+  return `<span style="color: ${colour}; opacity: ${
+    expired ? 0.55 : 1
+  }; display: grid; place-items: center; width: 26px; height: 26px; position: relative;">
     ${
       urgent
         ? `<span class="pointer-events-none absolute inset-0 rounded-full border-2 border-current animate-pulse-ring"></span>`
         : ""
     }
     <span class="relative grid place-items-center rounded-full border-2 border-current" style="width: 14px; height: 14px; background: currentcolor">
-      <span style="width: 4px; height: 4px; border-radius: 9999px; background: var(--background)"></span>
+      <span style="width: 4px; height: 4px; border-radius: 9999px; background: #ffffff"></span>
     </span>
     ${
       claimed
-        ? `<span class="pointer-events-none absolute -right-0.5 -top-0.5 grid h-3.5 w-3.5 place-items-center rounded-full border-2 border-current" style="background: var(--background)">
+        ? `<span class="pointer-events-none absolute -right-0.5 -top-0.5 grid h-3.5 w-3.5 place-items-center rounded-full border-2 border-current" style="background: #ffffff">
             <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4.5 L3 6 L6.5 2"/></svg>
           </span>`
         : ""
@@ -181,9 +192,9 @@ function renderIcon(urgent: boolean, expired: boolean, selected: boolean, claime
 }
 
 function renderDiamond() {
-  return `<span style="color: var(--foreground); display: grid; place-items: center; width: 24px; height: 24px;">
+  return `<span style="color: var(--green); display: grid; place-items: center; width: 24px; height: 24px;">
     <svg width="14" height="14" viewBox="0 0 14 14" style="transform: rotate(45deg)">
-      <rect x="2" y="2" width="10" height="10" fill="var(--background)" stroke="currentColor" stroke-width="2"/>
+      <rect x="2" y="2" width="10" height="10" fill="#FFFFFF" stroke="currentColor" stroke-width="2"/>
     </svg>
   </span>`;
 }

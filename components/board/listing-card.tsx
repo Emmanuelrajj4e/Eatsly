@@ -36,15 +36,21 @@ export interface ListingCardProps {
   selected: boolean;
   onSelect: (id: string | null) => void;
   onClaimOpen: (id: string) => void;
-  onTrack: (id: string) => void;
+  onTrack?: (id: string) => void;
 }
 
 /**
- * One row of the live board. State is encoded by form, never by hue:
- * URGENT (<30 min): inverted black card, URGENT label, striped bar.
- * SOON (<90): 2px ink border, SOON label. Normal: hairline.
- * Claimed: ring marker + check label. Expired: dotted border, 50% opacity.
+ * One row of the live board. State = colour AND label (never colour alone):
+ * Urgent <30 min: red-tint card + striped bar. Soon <90: yellow border.
+ * Claimed: blue chip + check. Expired: dashed border, dimmed.
+ * Nutrition tag chips are coloured by nutrient group (brief palette rules).
  */
+const TAG_TONES: Record<string, string> = {
+  "Carb-rich": "border-yellow bg-yellow-tint text-ink",
+  "Protein-rich": "border-orange bg-orange-tint text-ink",
+  "Fibre": "border-green bg-green-tint text-ink",
+  "Vitamin-rich": "border-blue bg-blue-tint text-ink",
+};
 export function ListingCard({
   listing,
   nowMs,
@@ -80,22 +86,25 @@ export function ListingCard({
       onKeyDown={onKeyDown}
       className={cn(
         "cursor-pointer",
-        urgent && "inverted border-transparent bg-foreground text-background",
-        soon && "border-line-strong border-2",
+        urgent && "border-red/50 bg-red-tint",
+        soon && "border-2 border-yellow",
+        !urgent && !soon && "border-line",
+        selected && "border-2 border-blue",
+        expired && "[opacity:0.6]",
       )}
     >
       {(expired || claimed) && (
         <span
           className={cn(
-            "absolute right-4 top-4 inline-flex h-7 items-center gap-1.5 border px-2",
+            "absolute right-4 top-4 inline-flex h-7 items-center gap-1.5 rounded-full px-2.5",
             "font-mono text-[10px] uppercase tracking-widest",
-            expired && "border-dashed border-line text-muted",
-            claimed && "border-line-strong",
+            claimed && "border border-blue bg-blue text-white",
+            expired && "border border-dashed border-muted text-muted",
           )}
         >
           {claimed ? (
             <>
-              <Check className="h-3.5 w-3.5" strokeWidth={2} /> Claimed
+              <Check className="h-3.5 w-3.5" strokeWidth={2.5} /> Claimed
             </>
           ) : (
             "Expired"
@@ -141,8 +150,11 @@ export function ListingCard({
               key={t}
               href={`/nutrition#${TAG_ANCHORS[t] ?? ""}`}
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center border border-line font-mono text-[11px] underline-offset-4 hover:bg-wash hover:underline"
-              style={{ padding: "2px 8px" }}
+              className={cn(
+                "inline-flex items-center gap-1 rounded-full border px-2.5 py-1",
+                "font-mono text-[11px] font-medium underline-offset-4 hover:underline",
+                TAG_TONES[t] ?? "border-line bg-surface",
+              )}
             >
               {t}
             </Link>

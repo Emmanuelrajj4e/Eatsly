@@ -240,6 +240,9 @@ h3 {
   outline-offset: 2px;
 }
 /* route polylines + distance label */
+.route-line {
+  stroke: var(--blue);
+}
 .route-label {
   background: var(--green);
   color: #ffffff;
