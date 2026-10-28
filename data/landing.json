@@ -1,0 +1,50 @@
+{
+  "serves": {
+    "donorTypes": [
+      "Restaurants",
+      "Wedding halls",
+      "Hostel messes",
+      "Office canteens",
+      "Bakeries",
+      "Households"
+    ],
+    "ngoTypes": [
+      "City kitchens",
+      "Community shelters",
+      "Student feeding NGOs",
+      "Old-age homes",
+      "Night shelters",
+      "Slum child centres"
+    ]
+  },
+  "steps": [
+    {
+      "n": "01",
+      "title": "Post",
+      "photo": "wedding-hall-buffet.jpg",
+      "subject": "Image: surplus buffet trays",
+      "sentence": "A donor posts what is left — dish, servings, last-cooked time — and the safety clock starts automatically."
+    },
+    {
+      "n": "02",
+      "title": "Claim",
+      "photo": "market-fresh-produce.jpg",
+      "subject": "Image: fresh produce at a market",
+      "sentence": "An NGO claims a listing only when its pickup ETA lands at least 10 minutes before the safe window ends."
+    },
+    {
+      "n": "03",
+      "title": "Track",
+      "photo": "volunteer-delivery-scooter.jpg",
+      "subject": "Image: volunteer on a scooter",
+      "sentence": "A volunteer picks up the food; everyone watching can follow every stage on a live tracking page."
+    },
+    {
+      "n": "04",
+      "title": "Serve",
+      "photo": "ngo-serving-line.jpg",
+      "subject": "Image: serving line at a community kitchen",
+      "sentence": "The receiving NGO serves the meal on time and marks the delivery — impact counts from that moment."
+    }
+  ]
+}
