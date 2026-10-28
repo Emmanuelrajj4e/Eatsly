@@ -37,6 +37,7 @@
   --green-shade: #095b40;
   --blue-shade: #1853bd;
   --red-shade: #b32b2f;
+  --yellow-shade: #e8a500;
 
   --wash: rgb(18 33 63 / 0.05);
   --shadow-float: 0 18px 40px -18px rgb(18 33 63 / 0.22);
@@ -64,6 +65,7 @@
   --color-blue-shade: var(--blue-shade);
   --color-yellow: var(--yellow);
   --color-yellow-tint: var(--yellow-tint);
+  --color-yellow-shade: var(--yellow-shade);
   --color-red: var(--red);
   --color-red-tint: var(--red-tint);
   --color-red-shade: var(--red-shade);

@@ -1,4 +1,77 @@
 {
+  "builtFor": [
+    { "label": "Restaurants", "icon": "utensils", "tone": "orange" },
+    { "label": "Wedding halls", "icon": "landmark", "tone": "yellow" },
+    { "label": "Hostels & canteens", "icon": "building", "tone": "blue" },
+    { "label": "Bakeries", "icon": "croissant", "tone": "red" },
+    { "label": "NGOs", "icon": "heart", "tone": "green" },
+    { "label": "Volunteers", "icon": "bike", "tone": "blue" }
+  ],
+  "gaps": [
+    {
+      "key": "timing",
+      "tone": "red",
+      "title": "The timing gap",
+      "problem": "Nobody knows how long cooked food stays safe.",
+      "fix": "Eatsly puts a safe-window clock on every listing."
+    },
+    {
+      "key": "matching",
+      "tone": "yellow",
+      "title": "The matching gap",
+      "problem": "NGOs cannot tell if they can reach food before it spoils.",
+      "fix": "Pickup ETA is checked against the clock; impossible claims are blocked."
+    },
+    {
+      "key": "trust",
+      "tone": "blue",
+      "title": "The trust gap",
+      "problem": "Donors never learn where their food went.",
+      "fix": "Live tracking and a proof-of-delivery receipt."
+    },
+    {
+      "key": "awareness",
+      "tone": "green",
+      "title": "The awareness gap",
+      "problem": "Served meals are often unbalanced, and nutrition is rarely taught.",
+      "fix": "A nutrition hub and nutrient tags on every listing."
+    }
+  ],
+  "roles": [
+    {
+      "id": "donor",
+      "name": "For donors",
+      "tone": "orange",
+      "promise": "Turn today's surplus into someone's plate in minutes.",
+      "benefits": [
+        "Post surplus in about two minutes.",
+        "The safe-until clock is calculated before you post.",
+        "Follow your food live until it is served."
+      ]
+    },
+    {
+      "id": "ngo",
+      "name": "For NGOs",
+      "tone": "green",
+      "promise": "Only see food you can reach while it is still safe.",
+      "benefits": [
+        "Every claim is ETA-checked against the safe window.",
+        "Filters for veg, packaged and high-protein food.",
+        "Claim in one tap — the run is tracked for you."
+      ]
+    },
+    {
+      "id": "volunteer",
+      "name": "For volunteers",
+      "tone": "blue",
+      "promise": "Carry a claim across the city, minute by minute.",
+      "benefits": [
+        "Pickups near your area and your vehicle.",
+        "Stage buttons update everyone watching in real time.",
+        "Served plates show up on the impact page."
+      ]
+    }
+  ],
   "serves": {
     "donorTypes": [
       "Restaurants",

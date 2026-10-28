@@ -1,34 +1,21 @@
 import { Hero } from "@/components/landing/hero";
-import { ServesRow, MissionBlack } from "@/components/landing/band-sections";
-import { ImpactGrid } from "@/components/landing/impact-grid";
-import { HowItWorks } from "@/components/landing/how-it-works";
-import { TrackPreview } from "@/components/landing/track-preview";
-import { NutritionTeaser } from "@/components/landing/nutrition-teaser";
-import { WhyMatters } from "@/components/landing/why-matters";
-import { CityBreakdown, Stories, Faq, FinalCta } from "@/components/landing/sections-late";
+import { BuiltFor } from "@/components/landing/built-for";
+import { WhyCondensed } from "@/components/landing/why-condensed";
+import { WhoItHelps } from "@/components/landing/who-it-helps";
 
 /**
- * Landing, in order:
- * a ticker strip · c hero + live card · d who it serves · e mission (black)
- * · f impact counters · g how it works · h live tracking preview (black)
- * · i nutrition teaser · j why it matters · k city breakdown · l stories
- * · m FAQ · n final CTA.
+ * Landing in brief order — announcement bar + header live in the layout:
+ * c hero · d built for · e why Eatsly (condensed) · f who it helps.
+ * No live board, no listing cards anywhere on this page.
+ * Sections g–m land in Phase 6.
  */
 export default function HomePage() {
   return (
-    <>
+    <div className="space-y-16 pb-6 md:space-y-24">
       <Hero />
-      <ServesRow />
-      <MissionBlack />
-      <ImpactGrid />
-      <HowItWorks />
-      <TrackPreview />
-      <NutritionTeaser />
-      <WhyMatters />
-      <CityBreakdown />
-      <Stories />
-      <Faq />
-      <FinalCta />
-    </>
+      <BuiltFor />
+      <WhyCondensed />
+      <WhoItHelps />
+    </div>
   );
 }

@@ -1,153 +1,150 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { DEMO_TRACKING_ID, HERO_QUOTE, APP_MISSION } from "@/config/brand";
-import { soonestOpen } from "@/services/listings";
-import { fmtClock, fmtCountdown } from "@/lib/utils";
-import { safeUntilMs, windowMinutes } from "@/services/geo";
-import { useTicker } from "@/hooks/use-ticker";
-import { DietMarker } from "@/components/ui/diet-marker";
-import { Tag } from "@/components/ui/chip";
+import { ArrowRight } from "lucide-react";
 import { buttonStyles } from "@/components/ui/button";
-import { ArrowRight, Link2, Plus } from "lucide-react";
 import { PatternImage } from "@/components/landing/pattern-image";
-import type { Listing } from "@/types";
 
-const RADIUS = 30;
-const CIRC = 2 * Math.PI * RADIUS;
+/**
+ * Hero, brief §1c: the quote as a large Instrument Serif italic headline
+ * with a yellow highlight under "finds a plate", one-line mission, three
+ * role CTAs (each preselects a role in /start), colour photo + floating
+ * live-tracking card. No listing cards, no board content.
+ */
 
-/** Hero's live card: "next to spoil" ring + a mini run preview. */
-function HeroLiveCard() {
-  const [listing, setListing] = useState<Listing | null>(null);
-  const [loaded, setLoaded] = useState(false);
-  const now = useTicker() * 1000;
-
-  useEffect(() => {
-    const id = window.requestAnimationFrame(() => {
-      setListing(soonestOpen());
-      setLoaded(true);
-    });
-    return () => window.cancelAnimationFrame(id);
-  }, []);
-
-  if (!loaded) {
-    return (
-      <div className="border border-line p-5" aria-hidden="true">
-        <div className="h-4 w-40 animate-pulse bg-wash" />
-        <div className="mt-4 h-8 w-28 animate-pulse bg-wash" />
-        <div className="mt-3 h-3 w-48 animate-pulse bg-wash" />
-      </div>
-    );
-  }
-
-  if (!listing) {
-    return (
-      <div className="border border-line p-5">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Next to spoil · live</p>
-        <p className="mt-3 text-sm text-muted">
-          The board is clear right now. Post the first batch and a clock starts here.
-        </p>
-        <Link href="/post" className={buttonStyles("secondary", "md", "mt-4 w-full justify-between")}>
-          Post surplus
-          <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
-        </Link>
-      </div>
-    );
-  }
-
-  const end = safeUntilMs(listing.preparedAt, listing.type);
-  const left = Math.max(0, end - now);
-  const share = Math.max(0, Math.min(1, left / (windowMinutes(listing.type) * 60000)));
-  const mins = left / 60000;
-
+/** Splits the hero quote so the last words get the yellow highlight. */
+function HighlightedQuote({ text }: { text: string }) {
+  const marker = "finds a plate";
+  const idx = text.indexOf(marker);
+  if (idx === -1) return <>{text}</>;
+  const head = text.slice(0, idx);
+  const tail = text.slice(idx);
   return (
-    <div className="border-2 border-line-strong bg-surface p-5">
-      <p className="font-mono text-[11px] uppercase tracking-widest text-muted">
-        Next to spoil · live
-      </p>
-      <div className="mt-4 flex items-center gap-4">
-        <svg width="76" height="76" viewBox="0 0 76 76" aria-hidden="true">
-          <circle cx="38" cy="38" r={RADIUS} fill="none" stroke="var(--line)" strokeWidth="3" />
-          <circle
-            cx="38"
-            cy="38"
-            r={RADIUS}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeDasharray={CIRC}
-            strokeDashoffset={CIRC * (1 - share)}
-            transform="rotate(-90 38 38)"
-            style={{ transition: "stroke-dashoffset 1s linear" }}
-          />
-          <text x="38" y="42" textAnchor="middle" fontSize="12" fontFamily="var(--font-mono)" fill="currentColor">
-            {Math.ceil(mins)}m
-          </text>
-        </svg>
-        <div className="min-w-0">
-          <h2 className="truncate font-display text-lg font-bold">{listing.title}</h2>
-          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <DietMarker veg={listing.veg} withLabel={false} />
-            <Tag>{listing.area}</Tag>
-          </p>
-          <p className="mt-1 font-mono text-xl tabular-nums">{fmtCountdown(left)}</p>
-        </div>
-      </div>
-      <p className="font-mono text-[11px] text-muted">
-        Safe until {fmtClock(new Date(end).toISOString())}
-      </p>
+    <>
+      {head}
+      <span className="bg-[linear-gradient(to_top,var(--yellow)_30%,transparent_30%)] [box-decoration-break:clone]">
+        {tail}
+      </span>
+    </>
+  );
+}
 
-      <div className="mt-4 border-t border-line pt-3">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-muted">Latest run</p>
-        <p className="mt-1 flex items-baseline justify-between gap-2 text-sm">
-          <span className="font-mono">{DEMO_TRACKING_ID}</span>
-          <span className="text-muted">Claimed · volunteer assigned</span>
-        </p>
-        <Link href={`/track/${DEMO_TRACKING_ID}`} className={buttonStyles("secondary", "md", "mt-3 w-full justify-between")}>
-          <span className="inline-flex items-center gap-2">
-            Track delivery
-            <Link2 className="h-4 w-4" strokeWidth={1.5} />
+/**
+ * Floating live-tracking card: mini colourful map with a pulsing volunteer
+ * marker, donor/NGO pins and an ETA chip. Decorative sample art — the facts
+ * it repeats (ID, ETA) are written as text next to it.
+ */
+function MiniTrackCard() {
+  return (
+    <div
+      aria-label="Sample live tracking card"
+      className="w-full max-w-[300px] rounded-card border border-line bg-surface p-3 shadow-[var(--shadow-float)]"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted">
+          <span className="relative grid h-2.5 w-2.5 place-items-center" aria-hidden="true">
+            <span className="absolute h-2.5 w-2.5 animate-pulse-ring rounded-full bg-blue" />
+            <span className="h-1.5 w-1.5 rounded-full bg-blue" />
           </span>
-          <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
-        </Link>
+          Live tracking · sample
+        </p>
+        <p className="font-mono text-[10px] font-semibold text-blue">ETS-2041</p>
       </div>
+
+      {/* mini map: streets, route, pins, moving volunteer */}
+      <svg viewBox="0 0 264 116" className="mt-2 w-full rounded-xl bg-blue-tint" aria-hidden="true">
+        {/* streets */}
+        <g stroke="#ffffff" strokeWidth="7" strokeLinecap="round" fill="none">
+          <path d="M8 30 H256" />
+          <path d="M8 62 H256" />
+          <path d="M8 92 H256" />
+          <path d="M52 8 V108" />
+          <path d="M118 8 V108" />
+          <path d="M196 8 V108" />
+        </g>
+        <g stroke="#e3ecdf" strokeWidth="2.5" strokeLinecap="round" fill="none">
+          <path d="M0 46 H264" opacity="0.8" />
+          <path d="M160 0 V116" opacity="0.8" />
+        </g>
+        {/* park + water blobs for colour */}
+        <ellipse cx="226" cy="24" rx="30" ry="13" fill="#bfe6cf" />
+        <ellipse cx="30" cy="98" rx="26" ry="10" fill="#a9d5ea" />
+        {/* travelled (solid green) + remaining (dashed blue) */}
+        <path d="M52 30 V62" stroke="var(--green)" strokeWidth="4" strokeLinecap="round" fill="none" />
+        <path
+          d="M52 62 H118 V92"
+          stroke="var(--blue)"
+          strokeWidth="3.5"
+          strokeDasharray="6 6"
+          strokeLinecap="round"
+          fill="none"
+        />
+        {/* donor pin (orange) */}
+        <circle cx="52" cy="30" r="7" fill="var(--orange)" stroke="#fff" strokeWidth="3" />
+        {/* ngo pin (green) */}
+        <circle cx="118" cy="92" r="7" fill="var(--green)" stroke="#fff" strokeWidth="3" />
+        {/* volunteer marker: blue dot + pulsing ring */}
+        <g>
+          <circle cx="118" cy="62" r="15" fill="var(--blue)" opacity="0.25" />
+          <circle cx="118" cy="62" r="7.5" fill="var(--blue)" stroke="#fff" strokeWidth="3" />
+        </g>
+      </svg>
+
+      <p className="mt-2 flex items-center justify-between font-mono text-[11px] text-muted">
+        <span>ETA 12 min · Imran (scooter)</span>
+        <span className="rounded-full bg-green px-2 py-0.5 text-[10px] font-semibold text-white">
+          On time
+        </span>
+      </p>
     </div>
   );
 }
 
-/** Hero: quote headline, mission, CTAs, photo, live card. */
 export function Hero() {
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-14 pt-10 md:pt-16">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
+    <section className="mx-auto max-w-6xl px-4 pb-16 pt-10 md:pt-14">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-center">
         <div className="fade-up">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            One live clock on every surplus meal
+          <p className="inline-flex items-center gap-2 rounded-full bg-orange-tint px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-ink">
+            Every plate, on time
           </p>
-          <h1 className="mt-4 max-w-4xl font-quote text-5xl italic leading-[1.05] sm:text-6xl md:text-7xl">
-            {HERO_QUOTE}
+          <h1 className="mt-4 max-w-4xl font-quote text-[2.6rem] italic leading-[1.04] sm:text-6xl md:text-[4.2rem]">
+            <HighlightedQuote text={"No food should expire before it finds a plate."} />
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{APP_MISSION}</p>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
+            Eatsly connects surplus food donors with verified NGOs and volunteers in
+            Hyderabad — every listing carries a live food-safety clock, every claim is
+            checked against it, and every delivery is tracked to the plate.
+          </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/post" className={buttonStyles("primary", "lg")}>
-              <Plus className="h-5 w-5" strokeWidth={1.5} />
-              Post surplus
+            <Link
+              href="/start?role=donor"
+              className={buttonStyles("primary", "lg")}
+            >
+              Donate food
+              <ArrowRight className="h-5 w-5" strokeWidth={2} />
             </Link>
-            <Link href="/board" className={buttonStyles("secondary", "lg")}>
-              Claim food
-              <ArrowRight className="h-5 w-5" strokeWidth={1.5} />
+            <Link href="/start?role=ngo" className={buttonStyles("outline-green", "lg")}>
+              I&apos;m an NGO
+            </Link>
+            <Link href="/start?role=volunteer" className={buttonStyles("outline-blue", "lg")}>
+              Become a volunteer
             </Link>
           </div>
+          <p className="mt-4 font-mono text-[11px] text-muted">
+            Demo sign-in — no real accounts. All data is sample data.
+          </p>
         </div>
 
-        <div className="space-y-4 fade-up">
+        <div className="relative fade-up pb-10 sm:pb-12">
           <PatternImage
-            subject="Image: hands sharing a plate of food"
+            subject="Image: hands sharing a plate of hot food"
             caption="Photo placeholder: hero-hands-sharing-meal.jpg"
-            ratio="4 / 3"
+            ratio="4 / 3.4"
+            tone="yellow"
+            className="rounded-card"
           />
-          <HeroLiveCard />
+          <div className="absolute inset-x-4 bottom-0 flex justify-center sm:inset-x-6">
+            <MiniTrackCard />
+          </div>
         </div>
       </div>
     </section>
