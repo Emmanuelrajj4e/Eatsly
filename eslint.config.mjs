@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated vinext / Cloudflare output (gitignored; never lint minified bundles)
+    ".cloudflare/**",
+    ".vinext/**",
+    "dist/**",
   ]),
 ]);
 
